@@ -5,35 +5,57 @@ pragma solidity 0.8.19;
 import "universal-rewards-distributor/src/UniversalRewardsDistributor.sol";
 import { console2 as console } from "forge-std/console2.sol";
 
+/// @title HyperdriveRewards
+/// @author DELV
+/// @notice HyperdriveRewards is a child contract of UniversalRewardsDistributor with the added functionality of batch claim.
 contract HyperdriveRewards is UniversalRewardsDistributor {
 
+    /// Errors ///
+
+    /// @notice Thrown when an argument to batchClaim has an icorrect length.
     error IncorrentLength();
+
+    /// @notice Thrown when the end index is less than the start index.
     error ArrayEndIndexLessThanStartIndex();
+
+    /// @notice Thrown when an array index is out of bounds.
     error ArrayIndexOutOfBounds();
 
+    /// @notice Instantiates a new HyperdriveRewards contract.
+    /// @param initialOwner The initial owner of the contract.
+    /// @param initialTimelock The initial timelock of the contract.
+    /// @param initialRoot The initial merkle root.
+    /// @param initialIpfsHash The optional ipfs hash containing metadata about
+    ///                        the root (e.g. the merkle tree itself).
+    /// @dev Warning: The `initialIpfsHash` might not correspond to the `initialRoot`.
     constructor(address initialOwner, uint256 initialTimelock, bytes32 initialRoot, bytes32 initialIpfsHash) UniversalRewardsDistributor(initialOwner, initialTimelock, initialRoot, initialIpfsHash) {}
 
-    function batchClaim(address[] calldata account, address[] calldata reward, uint256[] calldata claimable, bytes32[] calldata proofs, uint256 proofLength) external returns (uint256[] memory) {
-        console.log('batchClaim');
-        if (account.length != reward.length || account.length != claimable.length || account.length * proofLength != proofs.length || proofs.length % proofLength != 0) {
-            console.log('proofs.length', proofs.length);
-            console.log('proofLength', proofLength);
-            console.log('claimable.length', claimable.length);
-            console.log('reward.length', reward.length);
-            console.log('account.length', account.length);
+    /// @notice Calls claim for the list of accounts and rewards.
+    /// @param accounts The addresses to claim rewards for.
+    /// @param rewards The addresses of the reward tokens.
+    /// @param claimable The overall claimable amount of token rewards for each
+    ///                  account and token.
+    /// @param proofs The merkle proof that validates this claim.
+    /// @param proofLength The length of each merkle proof.
+    /// @return amount The amount of reward token claimed.
+    function batchClaim(address[] calldata accounts, address[] calldata rewards, uint256[] calldata claimable, bytes32[] calldata proofs, uint256 proofLength) external returns (uint256[] memory) {
+        if (accounts.length != rewards.length || accounts.length != claimable.length || accounts.length * proofLength != proofs.length || proofs.length % proofLength != 0) {
             revert IncorrentLength();
         }
 
-        uint256[] memory amounts = new uint256[](account.length);
-        console.log('amounts');
-        for (uint256 i = 0; i < account.length; i++) {
+        uint256[] memory amounts = new uint256[](accounts.length);
+        for (uint256 i = 0; i < accounts.length; i++) {
             bytes32[] memory proof = _slice(proofs, i * proofLength, (i + 1) * proofLength);
-            amounts[i] = this.claim(account[i], reward[i], claimable[i], proof);
+            amounts[i] = this.claim(accounts[i], rewards[i], claimable[i], proof);
         }
 
         return amounts;
     }
 
+    /// @dev Slices an array.
+    /// @param array The array to slice
+    /// @param start The starting index of the slice, inclusive.
+    /// @param end The ending index of the slice, exclusive.
     function _slice(bytes32[] memory array, uint start, uint end) internal pure returns (bytes32[] memory) {
         if(end < start) {
           revert ArrayEndIndexLessThanStartIndex();

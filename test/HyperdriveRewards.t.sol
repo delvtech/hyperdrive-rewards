@@ -102,7 +102,6 @@ contract HyperdriveRewardsTest is Test {
 
         rewardsContract.batchClaim(accounts, rewards, claimables, proofs, 3);
 
-        // Assert that the claims were successful
         for (uint256 i = 0; i < accounts.length; i++) {
             assertEq(rewardsContract.claimed(accounts[i], rewards[i]), claimables[i]);
         }

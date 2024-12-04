@@ -12,7 +12,6 @@ contract HyperdriveRewardsTest is Test, HyperdriveRewards {
     bytes32[] array = new bytes32[](5);
 
     function setUp() public {
-        // Set up some test data
         array[0] = bytes32("a");
         array[1] = bytes32("b");
         array[2] = bytes32("c");
@@ -48,7 +47,6 @@ contract HyperdriveRewardsTest is Test, HyperdriveRewards {
     }
 
     function testSliceRevertsWhenEndIsEqualToStart() public {
-        // Test slicing with invalid indices
         vm.expectRevert();
         _slice(array, 5, 5);
     }
