@@ -3,6 +3,8 @@ import cors from "cors";
 
 import https from "https";
 import fs from "fs";
+import { getDummyRewardsResponse } from "./rewards";
+import { Address } from "viem";
 
 // Instantiate the app.
 const app = express();
@@ -22,10 +24,17 @@ const sslOptions = {
   ),
 };
 
+interface RewardsRequest extends Request {
+  params: {
+    address: Address;
+  };
+}
+
 // Main rewards endpoint.
-app.get("/get/rewards/:address", (req: Request, res: Response) => {
+app.get("/get/rewards/:address", (req: RewardsRequest, res: Response) => {
   const { address } = req.params;
-  res.json({ message: `Rewards for address: ${address}` });
+  const rewards = getDummyRewardsResponse(address);
+  res.json(rewards);
 });
 
 // Start HTTPS server.
