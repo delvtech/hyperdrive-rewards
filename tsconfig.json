@@ -5,6 +5,16 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
-    "esModuleInterop": true
-  }
+    "esModuleInterop": true,
+    // This is a workaround for a bug in the webautn-p256 package, which was
+    // giving this error:
+    //
+    // node_modules/webauthn-p256/_types/types.d.ts:27:67 - error TS2536:
+    // Type '_K' cannot be used to index type 'fallback'.
+    //
+    // See this github issue for more details:
+    // https://github.com/wevm/viem/issues/2621
+    "skipLibCheck": true
+  },
+  "exclude": ["lib/**/*"]
 }
