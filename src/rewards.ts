@@ -9,7 +9,7 @@ interface RewardsResponse {
 export interface Reward {
   chainId: number;
   claimContract: Address;
-  claimable: bigint;
+  claimable: string;
   rewardToken: Address;
   merkleProof: string[] | null;
   merkleProofLastUpdated: number;
@@ -23,7 +23,7 @@ export function getDummyRewardsResponse(account: Address) {
         // rewards for this user that they can claim
         chainId: base.id,
         claimContract: zeroAddress,
-        claimable: parseEther("100"),
+        claimable: parseEther("100").toString(),
         rewardToken: "0xBAa5CC21fd487B8Fcc2F632f3F4E8D37262a0842",
         merkleProof: ["0xProof", "0xProof", "0xProof"],
         merkleProofLastUpdated: 123892327,
@@ -33,7 +33,7 @@ export function getDummyRewardsResponse(account: Address) {
         // to the claimContract yet
         chainId: base.id,
         claimContract: zeroAddress,
-        claimable: parseEther("0"),
+        claimable: parseEther("0").toString(),
         rewardToken: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913i",
         merkleProof: null,
         merkleProofLastUpdated: 123892327,
