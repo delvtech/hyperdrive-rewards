@@ -10,11 +10,60 @@ const options: Options = {
     },
     servers: [
       {
-        url: "http://localhost:3000", // Update this with your deployed server URL
+        url: "https://rewards.hyperdrive.money",
       },
     ],
+    components: {
+      schemas: {
+        RewardsResponse: {
+          type: "object",
+          properties: {
+            userAddress: {
+              type: "string",
+              description: "The user's blockchain address.",
+              example: "0x1234567890abcdef1234567890abcdef12345678",
+            },
+            rewards: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  chainId: { type: "integer", example: 1 },
+                  claimContract: {
+                    type: "string",
+                    description: "Address of the claim contract.",
+                    example: "0x0000000000000000000000000000000000000000",
+                  },
+                  claimable: {
+                    type: "string",
+                    description: "Amount of tokens claimable.",
+                    example: "1000000000000000000",
+                  },
+                  rewardToken: {
+                    type: "string",
+                    description: "Token address of the reward.",
+                    example: "0xBAa5CC21fd487B8Fcc2F632f3F4E8D37262a0842",
+                  },
+                  merkleProof: {
+                    type: "array",
+                    items: { type: "string" },
+                    nullable: true,
+                    example: ["0xProof1", "0xProof2", "0xProof3"],
+                  },
+                  merkleProofLastUpdated: {
+                    type: "integer",
+                    description: "Timestamp of the last merkle proof update.",
+                    example: 123892327,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
-  apis: ["./src/**/*.ts"], // Path to your route files
+  apis: ["./src/**/*.ts"],
 };
 
 const swaggerSpec = swaggerJsdoc(options);

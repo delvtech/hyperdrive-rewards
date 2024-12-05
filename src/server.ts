@@ -34,6 +34,15 @@ interface RewardsRequest extends Request {
   };
 }
 
+app.get("/", (req, res) => {
+  res.redirect("/swagger"); // Redirect to the Swagger documentation endpoint
+});
+
+// Endpoint to serve the Swagger JSON.
+app.get("/swagger.json", (req, res) => {
+  res.json(swaggerSpec);
+});
+
 /**
  * @swagger
  * /get/rewards/{address}:
@@ -53,10 +62,7 @@ interface RewardsRequest extends Request {
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
+ *               $ref: '#/components/schemas/RewardsResponse'
  *       400:
  *         description: Bad request
  */
