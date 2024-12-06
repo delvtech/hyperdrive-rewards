@@ -34,12 +34,12 @@ interface RewardsRequest extends Request {
   };
 }
 
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
   res.redirect("/swagger"); // Redirect to the Swagger documentation endpoint
 });
 
 // Endpoint to serve the Swagger JSON.
-app.get("/swagger.json", (req, res) => {
+app.get("/swagger.json", (req: Request, res: Response) => {
   res.json(swaggerSpec);
 });
 
