@@ -78,6 +78,8 @@ const options: Options = {
   apis: ["./src/**/*.ts"],
 };
 
-const swaggerSpec = swaggerJsdoc(options);
+export type SwaggerSpec = typeof options;
+
+const swaggerSpec = swaggerJsdoc(options) as SwaggerSpec;
 
 export default swaggerSpec;
