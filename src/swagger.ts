@@ -40,7 +40,7 @@ const options: Options = {
                 description: "Address of the claim contract.",
                 example: "0x0000000000000000000000000000000000000000",
               },
-              claimable: {
+              claimableAmount: {
                 type: "string",
                 description: "Amount of tokens claimable.",
                 example: "1000000000000000000",
