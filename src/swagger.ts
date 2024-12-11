@@ -24,53 +24,51 @@ const options: Options = {
               example: "0x1234567890abcdef1234567890abcdef12345678",
             },
             rewards: {
-              $ref: "#/components/schemas/Rewards",
+              type: "array",
+              $ref: "#/components/schemas/Reward",
             },
           },
           required: ["userAddress", "rewards"],
         },
-        Rewards: {
-          type: "array",
-          items: {
-            type: "object",
-            properties: {
-              chainId: { type: "integer", example: 1 },
-              claimContractAddress: {
-                type: "string",
-                description: "Address of the claim contract.",
-                example: "0x0000000000000000000000000000000000000000",
-              },
-              claimableAmount: {
-                type: "string",
-                description: "Amount of tokens claimable.",
-                example: "1000000000000000000",
-              },
-              rewardTokenAddress: {
-                type: "string",
-                description: "Token address of the reward.",
-                example: "0xBAa5CC21fd487B8Fcc2F632f3F4E8D37262a0842",
-              },
-              merkleProof: {
-                type: "array",
-                items: { type: "string" },
-                nullable: true,
-                example: ["0xProof1", "0xProof2", "0xProof3"],
-              },
-              merkleProofLastUpdated: {
-                type: "integer",
-                description: "Timestamp of the last merkle proof update.",
-                example: 123892327,
-              },
+        Reward: {
+          type: "object",
+          properties: {
+            chainId: { type: "integer", example: 1 },
+            claimContractAddress: {
+              type: "string",
+              description: "Address of the claim contract.",
+              example: "0x0000000000000000000000000000000000000000",
             },
-            required: [
-              "chainId",
-              "claimContractAddress",
-              "claimable",
-              "rewardTokenAddress",
-              "merkleProof",
-              "merkleProofLastUpdated",
-            ],
+            claimableAmount: {
+              type: "string",
+              description: "Amount of tokens claimable.",
+              example: "1000000000000000000",
+            },
+            rewardTokenAddress: {
+              type: "string",
+              description: "Token address of the reward.",
+              example: "0xBAa5CC21fd487B8Fcc2F632f3F4E8D37262a0842",
+            },
+            merkleProof: {
+              type: "array",
+              items: { type: "string" },
+              nullable: true,
+              example: ["0xProof1", "0xProof2", "0xProof3"],
+            },
+            merkleProofLastUpdated: {
+              type: "integer",
+              description: "Timestamp of the last merkle proof update.",
+              example: 123892327,
+            },
           },
+          required: [
+            "chainId",
+            "claimContractAddress",
+            "claimable",
+            "rewardTokenAddress",
+            "merkleProof",
+            "merkleProofLastUpdated",
+          ],
         },
       },
     },

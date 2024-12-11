@@ -1,7 +1,8 @@
+import { IRoute, IRouterHandler, RequestHandler } from "express";
 import { Address, parseEther, zeroAddress } from "viem";
 import { base } from "viem/chains";
 
-interface RewardsResponse {
+export interface RewardsResponse {
   userAddress: Address;
   rewards: Reward[];
 }
@@ -13,6 +14,12 @@ export interface Reward {
   rewardToken: Address;
   merkleProof: string[] | null;
   merkleProofLastUpdated: number;
+}
+
+interface RewardsRequest extends Request {
+  params: {
+    address: Address;
+  };
 }
 
 export function getDummyRewardsResponse(account: Address) {
