@@ -64,7 +64,7 @@ const options: Options = {
           required: [
             "chainId",
             "claimContractAddress",
-            "claimable",
+            "claimableAmount",
             "rewardTokenAddress",
             "merkleProof",
             "merkleProofLastUpdated",
