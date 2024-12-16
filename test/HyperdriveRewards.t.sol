@@ -116,6 +116,8 @@ contract HyperdriveRewardsTest is Test {
                 rewardsContract.claimed(accounts[i], rewards[i]),
                 claimables[i]
             );
+            uint256 userBalance = ERC20Mock(rewards[i]).balanceOf(accounts[i]);
+            assertEq(userBalance, claimables[i]);
         }
     }
 
