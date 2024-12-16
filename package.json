@@ -14,7 +14,8 @@
     "format:solidity": "npx prettier --write \"src/contracts/**/*.sol\""
   },
   "lint-staged": {
-    "contracts/**/*.sol": "npx prettier --write" \"src/contracts/**/*.sol\"",
+    "contracts/**/*.sol": "npx prettier --write",
+    "test/**/*.sol": "npx prettier --write"
   },
   "husky": {
     "hooks": {

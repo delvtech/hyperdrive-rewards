@@ -3,8 +3,8 @@ pragma solidity 0.8.19;
 
 import "forge-std/Test.sol";
 import "src/contracts/HyperdriveRewards.sol";
-import {Merkle} from "universal-rewards-distributor/lib/murky/src/Merkle.sol";
-import {ERC20Mock} from "universal-rewards-distributor/lib/openzeppelin-contracts/contracts/mocks/ERC20Mock.sol";
+import { Merkle } from "universal-rewards-distributor/lib/murky/src/Merkle.sol";
+import { ERC20Mock } from "universal-rewards-distributor/lib/openzeppelin-contracts/contracts/mocks/ERC20Mock.sol";
 
 contract HyperdriveRewardsTest is Test {
     HyperdriveRewards public rewardsContract;
@@ -25,7 +25,12 @@ contract HyperdriveRewardsTest is Test {
     address[] public users = [user1, user2, user3, user4];
 
     function setUp() public {
-        rewardsContract = new HyperdriveRewards(owner, 0, bytes32(0), bytes32(0));
+        rewardsContract = new HyperdriveRewards(
+            owner,
+            0,
+            bytes32(0),
+            bytes32(0)
+        );
         token1 = new ERC20Mock();
         token2 = new ERC20Mock();
 
@@ -41,14 +46,30 @@ contract HyperdriveRewardsTest is Test {
         token1.mint(address(rewardsContract), 1000 ether * 200);
         token2.mint(address(rewardsContract), 1000 ether * 200);
 
-        merkleData[0] = keccak256(bytes.concat(keccak256(abi.encode(user1, address(token1), 1 ether))));
-        merkleData[1] = keccak256(bytes.concat(keccak256(abi.encode(user2, address(token1), 1 ether))));
-        merkleData[2] = keccak256(bytes.concat(keccak256(abi.encode(user3, address(token1), 1 ether))));
-        merkleData[3] = keccak256(bytes.concat(keccak256(abi.encode(user4, address(token1), 1 ether))));
-        merkleData[4] = keccak256(bytes.concat(keccak256(abi.encode(user1, address(token2), 1 ether))));
-        merkleData[5] = keccak256(bytes.concat(keccak256(abi.encode(user2, address(token2), 1 ether))));
-        merkleData[6] = keccak256(bytes.concat(keccak256(abi.encode(user3, address(token2), 1 ether))));
-        merkleData[7] = keccak256(bytes.concat(keccak256(abi.encode(user4, address(token2), 1 ether))));
+        merkleData[0] = keccak256(
+            bytes.concat(keccak256(abi.encode(user1, address(token1), 1 ether)))
+        );
+        merkleData[1] = keccak256(
+            bytes.concat(keccak256(abi.encode(user2, address(token1), 1 ether)))
+        );
+        merkleData[2] = keccak256(
+            bytes.concat(keccak256(abi.encode(user3, address(token1), 1 ether)))
+        );
+        merkleData[3] = keccak256(
+            bytes.concat(keccak256(abi.encode(user4, address(token1), 1 ether)))
+        );
+        merkleData[4] = keccak256(
+            bytes.concat(keccak256(abi.encode(user1, address(token2), 1 ether)))
+        );
+        merkleData[5] = keccak256(
+            bytes.concat(keccak256(abi.encode(user2, address(token2), 1 ether)))
+        );
+        merkleData[6] = keccak256(
+            bytes.concat(keccak256(abi.encode(user3, address(token2), 1 ether)))
+        );
+        merkleData[7] = keccak256(
+            bytes.concat(keccak256(abi.encode(user4, address(token2), 1 ether)))
+        );
 
         merkleRoot = merkle.getRoot(merkleData);
 
@@ -57,7 +78,6 @@ contract HyperdriveRewardsTest is Test {
         vm.warp(block.timestamp + 1);
         vm.stopPrank();
     }
-
 
     function testBatchClaim() public {
         address[] memory accounts = new address[](4);
@@ -92,11 +112,16 @@ contract HyperdriveRewardsTest is Test {
         rewardsContract.batchClaim(accounts, rewards, claimables, proofs);
 
         for (uint256 i = 0; i < accounts.length; i++) {
-            assertEq(rewardsContract.claimed(accounts[i], rewards[i]), claimables[i]);
+            assertEq(
+                rewardsContract.claimed(accounts[i], rewards[i]),
+                claimables[i]
+            );
         }
     }
 
-    function _addrFromHashedString(string memory str) internal pure returns (address) {
+    function _addrFromHashedString(
+        string memory str
+    ) internal pure returns (address) {
         return address(uint160(uint256(keccak256(bytes(str)))));
     }
 }
