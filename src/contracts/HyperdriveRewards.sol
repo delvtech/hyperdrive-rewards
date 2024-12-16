@@ -12,7 +12,6 @@ import { console2 as console } from "forge-std/console2.sol";
 ///                    only, and is not intended to, and does not, have any
 ///                    particular legal or regulatory significance.
 contract HyperdriveRewards is UniversalRewardsDistributor {
-
     /// Errors ///
 
     /// @notice Thrown when an argument to batchClaim has an incorrect length.
@@ -32,7 +31,19 @@ contract HyperdriveRewards is UniversalRewardsDistributor {
     ///                        the root (e.g. the merkle tree itself).
     /// @dev Warning: The `initialIpfsHash` might not correspond to the
     ///      `initialRoot`.
-    constructor(address initialOwner, uint256 initialTimelock, bytes32 initialRoot, bytes32 initialIpfsHash) UniversalRewardsDistributor(initialOwner, initialTimelock, initialRoot, initialIpfsHash) {}
+    constructor(
+        address initialOwner,
+        uint256 initialTimelock,
+        bytes32 initialRoot,
+        bytes32 initialIpfsHash
+    )
+        UniversalRewardsDistributor(
+            initialOwner,
+            initialTimelock,
+            initialRoot,
+            initialIpfsHash
+        )
+    {}
 
     /// @notice Calls claim for the list of accounts and rewards.
     /// @param _accounts The addresses to claim rewards for.
@@ -41,16 +52,30 @@ contract HyperdriveRewards is UniversalRewardsDistributor {
     ///                  account and token.
     /// @param _proofs The merkle proof that validates this claim.
     /// @return amount The amount of reward token claimed.
-    function batchClaim(address[] calldata _accounts, address[] calldata _rewards, uint256[] calldata _claimable, bytes32[][] calldata _proofs) external returns (uint256[] memory) {
-        console.log('_proofs[0]', _proofs.length);
-        if (_accounts.length != _rewards.length || _accounts.length != _claimable.length || _accounts.length != _proofs.length) {
+    function batchClaim(
+        address[] calldata _accounts,
+        address[] calldata _rewards,
+        uint256[] calldata _claimable,
+        bytes32[][] calldata _proofs
+    ) external returns (uint256[] memory) {
+        console.log("_proofs[0]", _proofs.length);
+        if (
+            _accounts.length != _rewards.length ||
+            _accounts.length != _claimable.length ||
+            _accounts.length != _proofs.length
+        ) {
             revert IncorrectLength();
         }
 
         uint256[] memory amounts = new uint256[](_accounts.length);
         for (uint256 i = 0; i < _accounts.length; i++) {
             bytes32[] memory proof = _proofs[i];
-            amounts[i] = this.claim(_accounts[i], _rewards[i], _claimable[i], proof);
+            amounts[i] = this.claim(
+                _accounts[i],
+                _rewards[i],
+                _claimable[i],
+                proof
+            );
         }
 
         return amounts;

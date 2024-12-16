@@ -10,7 +10,8 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "format:solidity": "npx prettier --write \"src/contracts/**/*.sol\""
   },
   "dependencies": {
     "@types/express": "^5.0.0",
@@ -26,6 +27,9 @@
     "viem": "^2.21.54"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.17"
+    "@types/cors": "^2.8.17",
+    "prettier": "^3.4.2",
+    "prettier-plugin-organize-imports": "^4.1.0",
+    "prettier-plugin-solidity": "^1.4.1"
   }
 }
