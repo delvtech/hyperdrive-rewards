@@ -2,7 +2,6 @@
 pragma solidity 0.8.19;
 
 import "universal-rewards-distributor/src/UniversalRewardsDistributor.sol";
-import { console2 as console } from "forge-std/console2.sol";
 
 /// @title HyperdriveRewards
 /// @author DELV
@@ -58,7 +57,6 @@ contract HyperdriveRewards is UniversalRewardsDistributor {
         uint256[] calldata _claimable,
         bytes32[][] calldata _proofs
     ) external returns (uint256[] memory) {
-        console.log("_proofs[0]", _proofs.length);
         if (
             _accounts.length != _rewards.length ||
             _accounts.length != _claimable.length ||
