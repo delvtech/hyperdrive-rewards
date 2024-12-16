@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
+// SPDX-License-Identifier: Apache-2.0
 pragma solidity 0.8.19;
 
 import "forge-std/Test.sol";
@@ -83,24 +83,13 @@ contract HyperdriveRewardsTest is Test {
         bytes32[] memory proof3 = merkle.getProof(merkleData, 2);
         bytes32[] memory proof4 = merkle.getProof(merkleData, 4);
 
-        bytes32[] memory proofs = new bytes32[](12);
-        proofs[0] = proof1[0];
-        proofs[1] = proof1[1];
-        proofs[2] = proof1[2];
+        bytes32[][] memory proofs = new bytes32[][](4);
+        proofs[0] = proof1;
+        proofs[1] = proof2;
+        proofs[2] = proof3;
+        proofs[3] = proof4;
 
-        proofs[3] = proof2[0];
-        proofs[4] = proof2[1];
-        proofs[5] = proof2[2];
-
-        proofs[6] = proof3[0];
-        proofs[7] = proof3[1];
-        proofs[8] = proof3[2];
-
-        proofs[9] = proof4[0];
-        proofs[10] = proof4[1];
-        proofs[11] = proof4[2];
-
-        rewardsContract.batchClaim(accounts, rewards, claimables, proofs, 3);
+        rewardsContract.batchClaim(accounts, rewards, claimables, proofs);
 
         for (uint256 i = 0; i < accounts.length; i++) {
             assertEq(rewardsContract.claimed(accounts[i], rewards[i]), claimables[i]);
