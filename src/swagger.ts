@@ -25,7 +25,7 @@ const options: Options = {
             },
             rewards: {
               type: "array",
-              $ref: "#/components/schemas/Reward",
+              items: { $ref: "#/components/schemas/Reward" },
             },
           },
           required: ["userAddress", "rewards"],
