@@ -13,6 +13,14 @@
     "build": "tsc",
     "format:solidity": "npx prettier --write \"src/contracts/**/*.sol\""
   },
+  "lint-staged": {
+    "contracts/**/*.sol": "npx prettier --write" \"src/contracts/**/*.sol\"",
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "dependencies": {
     "@types/express": "^5.0.0",
     "@types/swagger-jsdoc": "^6.0.4",
@@ -28,6 +36,8 @@
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11",
     "prettier": "^3.4.2",
     "prettier-plugin-organize-imports": "^4.1.0",
     "prettier-plugin-solidity": "^1.4.1"
