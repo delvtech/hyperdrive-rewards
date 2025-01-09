@@ -80,7 +80,7 @@ if (LOCAL_DEVELOPMENT) {
     );
   });
 } else {
-  // Use port 443 for production.
+  // TODO: Use port 3000 for production.  Nginx will act as a reverse proxy and forward 443 traffic.
   const port = 443;
 
   // Load SSL Certificates.
@@ -94,7 +94,7 @@ if (LOCAL_DEVELOPMENT) {
   };
 
   // Start HTTPS server.
-  https.createServer(sslOptions, app).listen(port, () => {
+  https.createServer(sslOptions, app).listen(port, '0.0.0.0', () => {
     console.log(`Server running on https://localhost:${port}`);
     console.log(`Swagger Docs available at http://localhost:${port}/swagger`);
     console.log(
