@@ -16,5 +16,7 @@
     // https://github.com/wevm/viem/issues/2621
     "skipLibCheck": true
   },
-  "exclude": ["lib/**/*"]
+  "exclude": ["lib/**/*"],
+  "emitDecoratorMetadata": true,
+  "experimentalDecorators": true
 }
