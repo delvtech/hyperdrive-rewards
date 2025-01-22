@@ -1,7 +1,0 @@
-[project]
-name = "hyperdrive-rewards"
-version = "0.1.0"
-description = "A repository for calculating and distributing rewards earned by the Hyperdrive protocol."
-readme = "README.md"
-requires-python = ">=3.10, <=3.11"
-dependencies = ["agent0"]
