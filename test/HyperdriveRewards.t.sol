@@ -5,6 +5,7 @@ import "forge-std/Test.sol";
 import "src/contracts/HyperdriveRewards.sol";
 import { Merkle } from "universal-rewards-distributor/lib/murky/src/Merkle.sol";
 import { ERC20Mock } from "universal-rewards-distributor/lib/openzeppelin-contracts/contracts/mocks/ERC20Mock.sol";
+import { console2 as console } from "forge-std/console2.sol";
 
 contract HyperdriveRewardsTest is Test {
     HyperdriveRewards public rewardsContract;
@@ -47,28 +48,28 @@ contract HyperdriveRewardsTest is Test {
         token2.mint(address(rewardsContract), 1000 ether * 200);
 
         merkleData[0] = keccak256(
-            bytes.concat(keccak256(abi.encode(user1, address(token1), 1 ether)))
+            bytes.concat(keccak256(abi.encode(user1, address(token1), 1.1 ether)))
         );
         merkleData[1] = keccak256(
-            bytes.concat(keccak256(abi.encode(user2, address(token1), 1 ether)))
+            bytes.concat(keccak256(abi.encode(user2, address(token1), 1.2 ether)))
         );
         merkleData[2] = keccak256(
-            bytes.concat(keccak256(abi.encode(user3, address(token1), 1 ether)))
+            bytes.concat(keccak256(abi.encode(user3, address(token1), 1.3 ether)))
         );
         merkleData[3] = keccak256(
-            bytes.concat(keccak256(abi.encode(user4, address(token1), 1 ether)))
+            bytes.concat(keccak256(abi.encode(user4, address(token1), 1.4 ether)))
         );
         merkleData[4] = keccak256(
-            bytes.concat(keccak256(abi.encode(user1, address(token2), 1 ether)))
+            bytes.concat(keccak256(abi.encode(user1, address(token2), 2.1 ether)))
         );
         merkleData[5] = keccak256(
-            bytes.concat(keccak256(abi.encode(user2, address(token2), 1 ether)))
+            bytes.concat(keccak256(abi.encode(user2, address(token2), 2.2 ether)))
         );
         merkleData[6] = keccak256(
-            bytes.concat(keccak256(abi.encode(user3, address(token2), 1 ether)))
+            bytes.concat(keccak256(abi.encode(user3, address(token2), 2.3 ether)))
         );
         merkleData[7] = keccak256(
-            bytes.concat(keccak256(abi.encode(user4, address(token2), 1 ether)))
+            bytes.concat(keccak256(abi.encode(user4, address(token2), 2.4 ether)))
         );
 
         merkleRoot = merkle.getRoot(merkleData);
@@ -80,28 +81,32 @@ contract HyperdriveRewardsTest is Test {
     }
 
     function testBatchClaim() public {
+        // user 1, user 2, user 3, then user 1 again
         address[] memory accounts = new address[](4);
         accounts[0] = user1;
         accounts[1] = user2;
         accounts[2] = user3;
         accounts[3] = user1;
 
+        // token 1 3 times, then token 2
         address[] memory rewards = new address[](4);
         rewards[0] = address(token1);
         rewards[1] = address(token1);
         rewards[2] = address(token1);
         rewards[3] = address(token2);
 
+        // claimable 1.1, 1.2, 1.3, then 2.1,
+        // NOTE: left of decimal is token, right is user
         uint256[] memory claimables = new uint256[](4);
-        claimables[0] = 1 ether;
-        claimables[1] = 1 ether;
-        claimables[2] = 1 ether;
-        claimables[3] = 1 ether;
+        claimables[0] = 1.1 ether;
+        claimables[1] = 1.2 ether;
+        claimables[2] = 1.3 ether;
+        claimables[3] = 2.1 ether;
 
-        bytes32[] memory proof1 = merkle.getProof(merkleData, 0);
-        bytes32[] memory proof2 = merkle.getProof(merkleData, 1);
-        bytes32[] memory proof3 = merkle.getProof(merkleData, 2);
-        bytes32[] memory proof4 = merkle.getProof(merkleData, 4);
+        bytes32[] memory proof1 = merkle.getProof(merkleData, 0); // user 1, token 1
+        bytes32[] memory proof2 = merkle.getProof(merkleData, 1); // user 2, token 1
+        bytes32[] memory proof3 = merkle.getProof(merkleData, 2); // user 3, token 1
+        bytes32[] memory proof4 = merkle.getProof(merkleData, 4); // user 1, token 2
 
         bytes32[][] memory proofs = new bytes32[][](4);
         proofs[0] = proof1;

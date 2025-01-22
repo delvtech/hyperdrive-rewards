@@ -2,6 +2,7 @@
 pragma solidity 0.8.19;
 
 import "universal-rewards-distributor/src/UniversalRewardsDistributor.sol";
+import "universal-rewards-distributor/lib/openzeppelin-contracts/contracts/security/ReentrancyGuard.sol";
 
 /// @title HyperdriveRewards
 /// @author DELV
@@ -10,7 +11,7 @@ import "universal-rewards-distributor/src/UniversalRewardsDistributor.sol";
 /// @custom:disclaimer The language used in this code is for coding convenience
 ///                    only, and is not intended to, and does not, have any
 ///                    particular legal or regulatory significance.
-contract HyperdriveRewards is UniversalRewardsDistributor {
+contract HyperdriveRewards is UniversalRewardsDistributor, ReentrancyGuard {
     /// Errors ///
 
     /// @notice Thrown when an argument to batchClaim has an incorrect length.
@@ -56,7 +57,7 @@ contract HyperdriveRewards is UniversalRewardsDistributor {
         address[] calldata _rewards,
         uint256[] calldata _claimable,
         bytes32[][] calldata _proofs
-    ) external returns (uint256[] memory) {
+    ) external nonReentrant returns (uint256[] memory) {
         if (
             _accounts.length != _rewards.length ||
             _accounts.length != _claimable.length ||
