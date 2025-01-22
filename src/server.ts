@@ -16,6 +16,7 @@ import { infoRouter } from "./info";
 dotenv.config();
 
 const LOCAL_DEVELOPMENT = process.env.NODE_ENV === "development";
+console.log('LOCAL_DEVELOPMENT', LOCAL_DEVELOPMENT);
 
 // Instantiate the app.
 export const app = express();
@@ -24,7 +25,6 @@ export const app = express();
 app.use(cors());
 
 // Enable Swagger UI.
-console.log("swaggerSpec", swaggerSpec);
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get("/", (req: Request, res: Response) => {
   res.redirect("/swagger"); // Redirect to the Swagger documentation endpoint
@@ -49,11 +49,7 @@ initializeDataSource().then(() => {
 
     // Start HTTP server.
     http.createServer(app).listen(port, () => {
-      console.log(`Server running on http://localhost:${port}`);
-      console.log(`Swagger Docs available at http://localhost:${port}/swagger`);
-      console.log(
-        `Swagger JSON available at http://localhost:${port}/swagger.json`
-      );
+      createServerLogs(port);
     });
   } else {
     // TODO: Use port 3000 for production.  Nginx will act as a reverse proxy and forward 443 traffic.
@@ -71,11 +67,15 @@ initializeDataSource().then(() => {
 
     // Start HTTPS server.
     https.createServer(sslOptions, app).listen(port, "0.0.0.0", () => {
-      console.log(`Server running on https://localhost:${port}`);
-      console.log(`Swagger Docs available at http://localhost:${port}/swagger`);
-      console.log(
-        `Swagger JSON available at http://localhost:${port}/swagger.json`
-      );
+      createServerLogs(port);
     });
   }
 });
+function createServerLogs(port: number) {
+  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Swagger Docs available at http://localhost:${port}/swagger`);
+  console.log(
+    `Swagger JSON available at http://localhost:${port}/swagger.json`
+  );
+}
+

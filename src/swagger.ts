@@ -1,4 +1,10 @@
 import swaggerJsdoc, { Options } from "swagger-jsdoc";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const LOCAL_DEVELOPMENT = process.env.NODE_ENV === "development";
+const URL =  LOCAL_DEVELOPMENT ? "http://localhost:8080" : "https://rewards.hyperdrive.money";
 
 const options: Options = {
   definition: {
@@ -10,7 +16,7 @@ const options: Options = {
     },
     servers: [
       {
-        url: "https://rewards.hyperdrive.money",
+        url: URL,
       },
     ],
     components: {

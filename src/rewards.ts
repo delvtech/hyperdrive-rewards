@@ -30,7 +30,7 @@ interface RewardsRequest extends Request {
 
 /**
  * @swagger
- * /get/rewards/{address}:
+ * /get/rewards/user/{address}:
  *   get:
  *     summary: Get rewards for an address.
  *     description: Returns the rewards associated with a specific address.
@@ -52,7 +52,7 @@ interface RewardsRequest extends Request {
  *         description: Bad request
  */
 rewardsRouter.get(
-  "user/:address",
+  "/user/:address",
   async (req: RewardsRequest, res: Response) => {
     const { address } = req.params;
     const rewards = await fetchRewardsForUser(address);
@@ -63,7 +63,7 @@ rewardsRouter.get(
 
 /**
  * @swagger
- * /get/rewards/{address}:
+ * /get/rewards/stub{address}:
  *   get:
  *     summary: Get rewards for an address.
  *     description: Returns the rewards associated with a specific address.
@@ -85,7 +85,7 @@ rewardsRouter.get(
  *         description: Bad request
  */
 rewardsRouter.get(
-  "user/stub/:address",
+  "/stub/:address",
   async (req: RewardsRequest, res: Response) => {
     const { address } = req.params;
     const dummyRewards = getDummyRewardsResponse(address);

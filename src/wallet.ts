@@ -45,7 +45,6 @@ export const fetchWalletAddresses = async (
   const walletTable = AppDataSource.getRepository(Wallet);
   const rows = await walletTable
     .createQueryBuilder("wallet_pnl")
-
     .select("DISTINCT wallet_pnl.wallet_address", "wallet_address")
     .getRawMany();
   records = rows.map((row) => row.wallet_address);
