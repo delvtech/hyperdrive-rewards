@@ -26,14 +26,26 @@ A*LP + B*shorts = share reserves
 
 ---
 
-at each timestep:
+Hyperdrive deposits tokens into underlying vault, those tokens earn rewards. If we can calculate the
+total amount of rewards for a given time period, i.e. 100 ELFI, then we can divvy those up to the users.
+
+First, we split the amount up between shorts and LPs
+
+short total rewards = shorts outstanding / share reserves
+lp total rewards = (share reserves - shorts outstanding) / share reserves
+
+then for each user we need their time weighted average of shorts,
+to get this we need to add the time weighted sums of the total shorts outstanding and the user's short positions.
+then we simply divide the users sum by the total sum to get the pertage and then multiply by the short total rewards.
+the easiest way to do this is to go block by block and calculate percentages. then a simple average of the percentages will work.
+
 start with an amount = share*reserves (from pool config or yield source)
 break into two sub-amounts: share_reserves_for_LPs and share_reserves_for_shorts
 for each position:
 if short:
-amount_earned += (short_amount / total_shorts) * share*reserves_for_shorts
+amount_earned += (short_amount / total_shorts) * share_reserves_for_shorts
 if LP:
-amount_earned += (LP_amount / total_LPs) * share_reserves_for_LPs
+amount_earned += (LP_amount / total_LPs) \* share_reserves_for_LPs
 
 final data:
 
