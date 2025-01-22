@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "CommonJS",
+    "target": "ESNext",
+    "module": "NodeNext",
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
@@ -14,9 +14,14 @@
     //
     // See this github issue for more details:
     // https://github.com/wevm/viem/issues/2621
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    // These are needed to allow typeorm decorators to work.
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    // This must be disabled for entity properties to be defined.  Without this
+    // the entity properties need to have a default value set in the class
+    // constructor.
+    "strictPropertyInitialization": false
   },
-  "exclude": ["lib/**/*"],
-  "emitDecoratorMetadata": true,
-  "experimentalDecorators": true
+  "exclude": ["lib/**/*"]
 }
