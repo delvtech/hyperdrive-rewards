@@ -1,7 +1,0 @@
-Metadata-Version: 2.1
-Name: hyperdrive-rewards
-Version: 0.1.0
-Summary: A repository for calculating and distributing rewards earned by the Hyperdrive protocol.
-Requires-Python: <=3.11,>=3.10
-Description-Content-Type: text/markdown
-Requires-Dist: agent0

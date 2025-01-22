@@ -1,8 +1,0 @@
-README.md
-hello.py
-pyproject.toml
-hyperdrive_rewards.egg-info/PKG-INFO
-hyperdrive_rewards.egg-info/SOURCES.txt
-hyperdrive_rewards.egg-info/dependency_links.txt
-hyperdrive_rewards.egg-info/requires.txt
-hyperdrive_rewards.egg-info/top_level.txt
