@@ -3,7 +3,6 @@ import { Request, Response, Router } from "express";
 import fs from "fs";
 import path from "path";
 import { Address } from "viem";
-import { mainnet } from "viem/chains";
 import { fetchAllHyperdriveAddresses } from "./query/poolsQuery";
 import { fetchRewardsForUser } from "./query/rewardsQuery";
 import { fetchWalletAddresses } from "./wallet";
@@ -119,12 +118,12 @@ rewardsRouter.get(
 function getStubbedResponse(address: Address): RewardsResponse | null {
     try {
         // Load JSON data
-        const filePath = path.join(__dirname, "../data/mainnet_test.json"); // Adjust path if necessary
+        const filePath = path.join(__dirname, "../data/mainnet_test_out.json"); // Adjust path if necessary
         const rawData = fs.readFileSync(filePath, "utf8");
         const jsonData = JSON.parse(rawData);
 
         // Find user entry
-        const userRewards = jsonData.data.find(
+        const userRewards = jsonData.rewards.find(
             (entry: any) => entry.user.toLowerCase() === address.toLowerCase(),
         );
 
@@ -135,12 +134,12 @@ function getStubbedResponse(address: Address): RewardsResponse | null {
             userAddress: address as Address,
             rewards: [
                 {
-                    chainId: mainnet.id,
-                    claimContract: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+                    chainId: userRewards.chainId,
+                    claimContract: userRewards.claimContract,
                     claimableAmount: userRewards.claimable,
                     rewardToken: userRewards.token,
-                    merkleProof: ["0xProof1", "0xProof2"], // Stubbed proof
-                    merkleProofLastUpdated: Date.now(),
+                    merkleProof: userRewards.proof,
+                    merkleProofLastUpdated: userRewards.merkleProofLastUpdated,
                 },
             ],
         };
