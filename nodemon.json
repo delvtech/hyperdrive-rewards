@@ -1,0 +1,12 @@
+{
+  "watch": ["src"],
+  "ignore": [
+    "script/*",
+    "logs/*",
+    "data/*",
+    "cache/*",
+    "out/*",
+    "build/*",
+    "broadcast/*"
+  ]
+}
