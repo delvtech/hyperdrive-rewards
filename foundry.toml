@@ -3,6 +3,8 @@ solc_version = '0.8.19'
 src = "src/contracts"
 out = "out"
 libs = ["lib"]
+fs_permissions = [{ access = "read-write", path = "./data" }]
+
 
 remappings = [
   "universal-rewards-distributor/=lib/universal-rewards-distributor",

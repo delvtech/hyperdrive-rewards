@@ -31,8 +31,8 @@ total amount of rewards for a given time period, i.e. 100 ELFI, then we can divv
 
 First, we split the amount up between shorts and LPs
 
-short total rewards = shorts outstanding / share reserves
-lp total rewards = (share reserves - shorts outstanding) / share reserves
+short total rewards = shorts outstanding
+lp total rewards = (share reserves - shorts outstanding)
 
 then for each user we need their time weighted average of shorts,
 to get this we need to add the time weighted sums of the total shorts outstanding and the user's short positions.
