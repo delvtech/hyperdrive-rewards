@@ -136,8 +136,8 @@ function getStubbedResponse(address: Address): RewardsResponse | null {
                 {
                     chainId: userRewards.chainId,
                     claimContract: userRewards.claimContract,
-                    claimableAmount: userRewards.claimable,
-                    rewardToken: userRewards.token,
+                    claimableAmount: userRewards.claimableAmount,
+                    rewardToken: userRewards.rewardToken,
                     merkleProof: userRewards.proof,
                     merkleProofLastUpdated: userRewards.merkleProofLastUpdated,
                 },
