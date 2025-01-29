@@ -3,7 +3,7 @@
     {
       "user": "0x04F5c67Be870758E6D5200a15f7722B471EbB821",
       "chainId": 1,
-      "claimContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "claimContract": "0xEd8D7d3A98CB4ea6C91a80dcd2220719c264531f",
       "claimableAmount": "2803826510228852736",
       "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
       "proof": [
@@ -17,7 +17,7 @@
     {
       "user": "0x38661B4DCE46eA80E7382F2d9e046993195614Da",
       "chainId": 1,
-      "claimContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "claimContract": "0xEd8D7d3A98CB4ea6C91a80dcd2220719c264531f",
       "claimableAmount": "879701015673852672",
       "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
       "proof": [
@@ -31,7 +31,7 @@
     {
       "user": "0x5659a5DFcfd0a041677227cEF96bC2365870B70E",
       "chainId": 1,
-      "claimContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "claimContract": "0xEd8D7d3A98CB4ea6C91a80dcd2220719c264531f",
       "claimableAmount": "5203328948755996672",
       "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
       "proof": [
@@ -45,7 +45,7 @@
     {
       "user": "0x5bEd4EC6af7697c955c8D72cccA573D590957F0D",
       "chainId": 1,
-      "claimContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "claimContract": "0xEd8D7d3A98CB4ea6C91a80dcd2220719c264531f",
       "claimableAmount": "3679117783098205696",
       "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
       "proof": [
@@ -59,7 +59,7 @@
     {
       "user": "0x6a946845A742a80a07Ce1181E68d91D3F0232EC0",
       "chainId": 1,
-      "claimContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "claimContract": "0xEd8D7d3A98CB4ea6C91a80dcd2220719c264531f",
       "claimableAmount": "7588276591890558976",
       "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
       "proof": [
@@ -73,7 +73,7 @@
     {
       "user": "0x7837560135d66E8cf745e665781574178Da26097",
       "chainId": 1,
-      "claimContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "claimContract": "0xEd8D7d3A98CB4ea6C91a80dcd2220719c264531f",
       "claimableAmount": "2781592997262382080",
       "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
       "proof": [
@@ -87,7 +87,7 @@
     {
       "user": "0x849D52316331967b6fF1198e5E32A0eB168D039d",
       "chainId": 1,
-      "claimContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "claimContract": "0xEd8D7d3A98CB4ea6C91a80dcd2220719c264531f",
       "claimableAmount": "4073342152237573120",
       "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
       "proof": [
@@ -101,7 +101,7 @@
     {
       "user": "0x8f16Dd690317eA1B6b2690685E2b38b293eB0cd3",
       "chainId": 1,
-      "claimContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "claimContract": "0xEd8D7d3A98CB4ea6C91a80dcd2220719c264531f",
       "claimableAmount": "3245236620542858752",
       "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
       "proof": [
@@ -115,7 +115,7 @@
     {
       "user": "0x91cfD910E0B93911482706e9f1523541C6c1f837",
       "chainId": 1,
-      "claimContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "claimContract": "0xEd8D7d3A98CB4ea6C91a80dcd2220719c264531f",
       "claimableAmount": "6126214892891816960",
       "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
       "proof": [
@@ -129,7 +129,7 @@
     {
       "user": "0x9eB168Ab44B7c479431681558FdF34230c969DE9",
       "chainId": 1,
-      "claimContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "claimContract": "0xEd8D7d3A98CB4ea6C91a80dcd2220719c264531f",
       "claimableAmount": "9358666982912948224",
       "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
       "proof": [
@@ -143,7 +143,7 @@
     {
       "user": "0xa408f4265555d2ca674F3205c36Afb5dba3245A6",
       "chainId": 1,
-      "claimContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "claimContract": "0xEd8D7d3A98CB4ea6C91a80dcd2220719c264531f",
       "claimableAmount": "8036466506815773696",
       "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
       "proof": [
@@ -157,7 +157,7 @@
     {
       "user": "0xAABd5fBcb8ad62D4FbBB02a2E9769a9F2EE7e883",
       "chainId": 1,
-      "claimContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "claimContract": "0xEd8D7d3A98CB4ea6C91a80dcd2220719c264531f",
       "claimableAmount": "9001554697715642368",
       "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
       "proof": [
@@ -171,7 +171,7 @@
     {
       "user": "0xB6022F04637AC52c1e1C8Ca1b1A3Ce21D61949b6",
       "chainId": 1,
-      "claimContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "claimContract": "0xEd8D7d3A98CB4ea6C91a80dcd2220719c264531f",
       "claimableAmount": "3144723436360416768",
       "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
       "proof": [
@@ -185,7 +185,7 @@
     {
       "user": "0xC13Dbe26e27f3702A71664cc026FA3d4DB56c3Bb",
       "chainId": 1,
-      "claimContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "claimContract": "0xEd8D7d3A98CB4ea6C91a80dcd2220719c264531f",
       "claimableAmount": "3376107605183756800",
       "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
       "proof": [
@@ -199,7 +199,7 @@
     {
       "user": "0xdF7Eea635c890caf0467Ab9912d96b924A0Ce482",
       "chainId": 1,
-      "claimContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "claimContract": "0xEd8D7d3A98CB4ea6C91a80dcd2220719c264531f",
       "claimableAmount": "2907674616824322048",
       "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
       "proof": [
@@ -213,7 +213,7 @@
     {
       "user": "0xF6094C3A380AD6161Fb8240F3043392A0E427CAC",
       "chainId": 1,
-      "claimContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "claimContract": "0xEd8D7d3A98CB4ea6C91a80dcd2220719c264531f",
       "claimableAmount": "2064276523936234496",
       "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
       "proof": [
