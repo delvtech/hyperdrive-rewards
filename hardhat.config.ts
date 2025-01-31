@@ -1,5 +1,7 @@
 import "@nomicfoundation/hardhat-foundry";
+import "@nomicfoundation/hardhat-toolbox";
 import "@nomicfoundation/hardhat-toolbox-viem";
+import "@nomicfoundation/hardhat-verify";
 import "@nomicfoundation/hardhat-viem";
 import "dotenv/config";
 import "hardhat-deploy";

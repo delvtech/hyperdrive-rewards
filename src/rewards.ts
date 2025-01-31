@@ -7,9 +7,9 @@ import { fetchAllHyperdriveAddresses } from "./query/poolsQuery";
 import { fetchRewardsForUser } from "./query/rewardsQuery";
 import { fetchWalletAddresses } from "./wallet";
 
-// 0xA29A771683b4857bBd16e1e4f27D5B6bfF5320 // morpho usde/DAI
+// 0xA29A771683b4857bBd16e1e4f27D5B6bfF53209B // morpho usde/DAI
 // 0x7548c4F665402BAb3a4298B88527824B7b18Fe27 // morpho wsETH/USDA
-// 0xc8D47DE20F7053Cc02504600596A647A482Bbc // morpho wsETH/USDC
+// 0xc8D47DE20F7053Cc02504600596A647A482Bbc46 // morpho wsETH/USDC
 
 export const rewardsRouter = Router();
 
