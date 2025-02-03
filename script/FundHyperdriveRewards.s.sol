@@ -31,17 +31,26 @@ contract FundHyperdriveRewards is Script {
         uint256 rewardsAmount = vm.envUint("REWARDS_AMOUNT");
         IERC20 token = IERC20(vm.envAddress("REWARDS_TOKEN"));
         address tokenWhale = vm.envAddress("REWARDS_WHALE");
+        uint256 whaleBalance = token.balanceOf(tokenWhale);
 
         uint256 amount = rewardsAmount * 1 ether;
+        console.log('token', address(token));
         console.log('rewardsContract', rewardsContract);
         console.log('amount', amount);
         console.log('tokenWhale', tokenWhale);
+        console.log('whaleBalance', whaleBalance);
 
-        vm.startBroadcast(tokenWhale);
+        // vm.startBroadcast(tokenWhale);
         vm.deal(tokenWhale, 1 ether);
-        token.approve(rewardsContract, amount);
-        token.transfer(rewardsContract, amount);
+        vm.startPrank(tokenWhale);
 
-        vm.stopBroadcast();
+        // token.approve(rewardsContract, amount);
+        token.transfer(rewardsContract, amount);
+        uint256 rewardsBalance = token.balanceOf(rewardsContract);
+        console.log('rewardsBalance', rewardsBalance);
+
+        vm.stopPrank();
+
+        // vm.stopBroadcast();
     }
 }

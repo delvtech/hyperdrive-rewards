@@ -72,6 +72,7 @@ contract HyperdriveRewardsTest is Test {
             bytes.concat(keccak256(abi.encode(user4, address(token2), 2.4 ether)))
         );
 
+
         merkleRoot = merkle.getRoot(merkleData);
 
         vm.startPrank(updater);

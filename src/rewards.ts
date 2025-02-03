@@ -8,7 +8,7 @@ import { fetchRewardsForUser } from "./query/rewardsQuery";
 import { fetchWalletAddresses } from "./wallet";
 
 // 0xA29A771683b4857bBd16e1e4f27D5B6bfF5320 // morpho usde/DAI
-// 0x7548c4F665402BAb3a4298B88527824B7b18Fe // morpho wsETH/USDA
+// 0x7548c4F665402BAb3a4298B88527824B7b18Fe27 // morpho wsETH/USDA
 // 0xc8D47DE20F7053Cc02504600596A647A482Bbc // morpho wsETH/USDC
 
 export const rewardsRouter = Router();
@@ -20,9 +20,9 @@ export interface RewardsResponse {
 
 export interface Reward {
     chainId: number;
-    claimContract: Address;
+    claimContractAddress: Address;
     claimableAmount: string;
-    rewardToken: Address;
+    rewardTokenAddress: Address;
     merkleProof: string[] | null;
     merkleProofLastUpdated: number;
 }
@@ -135,9 +135,9 @@ function getStubbedResponse(address: Address): RewardsResponse | null {
             rewards: [
                 {
                     chainId: userRewards.chainId,
-                    claimContract: userRewards.claimContract,
+                    claimContractAddress: userRewards.claimContract,
                     claimableAmount: userRewards.claimableAmount,
-                    rewardToken: userRewards.rewardToken,
+                    rewardTokenAddress: userRewards.rewardToken,
                     merkleProof: userRewards.proof,
                     merkleProofLastUpdated: userRewards.merkleProofLastUpdated,
                 },

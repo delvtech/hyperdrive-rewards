@@ -64,15 +64,17 @@ contract UpdateMerkleRoot is Script {
                 )
             );
             merkleData[i] = leaf;
+        }
 
+        Merkle merkle = new Merkle();
+
+        for (uint256 i = 0; i < merkleData.length; i++) {
             // Compute Merkle proof
-            Merkle _merkle = new Merkle();
-            bytes32[] memory proof = _merkle.getProof(merkleData, i);
-
+            bytes32[] memory proof = merkle.getProof(merkleData, i);
             // Store reward data
             rewards[i] = RewardData({
                 user: merkleEntries[i].user,
-                chainId: 8453, // Base chain ID (replace if needed)
+                chainId: 708, // Base chain ID (replace if needed)
                 claimContract: contractAddress,
                 claimableAmount: merkleEntries[i].claimable,
                 rewardToken: merkleEntries[i].token,
@@ -81,7 +83,7 @@ contract UpdateMerkleRoot is Script {
             });
             console.log("    {");
             console.log('      "user": "', merkleEntries[i].user, '",');
-            console.log('      "chainId": 1', ",");
+            console.log('      "chainId": 708', ",");
             console.log('      "claimContract": "', contractAddress, '",');
             console.log(
                 '      "claimableAmount": ',
@@ -92,16 +94,23 @@ contract UpdateMerkleRoot is Script {
             console.log('      "proof": ', bytes32ArrayToString(proof), ",");
             console.log(
                 '      "merkleProofLastUpdated": ',
-                block.timestamp,
-                ","
+                block.timestamp
             );
             console.log("    },");
         }
-        console.log("  ],");
+        console.log("  ]");
         console.log("}");
 
+
+
+        bytes32[] memory _proof = rewards[0].merkleProof;
+        console.logBytes32(_proof[0]);
+        console.logBytes32(_proof[1]);
+        console.logBytes32(_proof[2]);
+        console.logBytes32(_proof[3]);
+
+
         // Compute the Merkle root
-        Merkle merkle = new Merkle();
         bytes32 merkleRoot = merkle.getRoot(merkleData);
         console.log("Merkle root: ", bytes32ToHexString(merkleRoot));
 
@@ -112,8 +121,8 @@ contract UpdateMerkleRoot is Script {
         // console.log("Rewards JSON written to:", outputFilePath);
 
         // Update the Merkle root in the contract
-        // HyperdriveRewards rewardsContract = HyperdriveRewards(contractAddress);
-        // rewardsContract.setRoot(merkleRoot, bytes32(0));
+        HyperdriveRewards rewardsContract = HyperdriveRewards(contractAddress);
+        rewardsContract.setRoot(merkleRoot, bytes32(0));
 
         console.log("Merkle root updated.");
 
