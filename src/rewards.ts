@@ -22,6 +22,7 @@ export interface Reward {
     chainId: number;
     claimContractAddress: Address;
     claimableAmount: string;
+    pendingAmount: string;
     rewardTokenAddress: Address;
     merkleProof: string[] | null;
     merkleProofLastUpdated: number;
@@ -130,6 +131,7 @@ function getStubbedResponse(address: Address): RewardsResponse | null {
         if (!userRewards) return null;
 
         // Return formatted rewards response
+        // TODO: get the pendingAmount from the latest epoch from the database.
         return {
             userAddress: address as Address,
             rewards: [
@@ -137,6 +139,7 @@ function getStubbedResponse(address: Address): RewardsResponse | null {
                     chainId: userRewards.chainId,
                     claimContractAddress: userRewards.claimContract,
                     claimableAmount: userRewards.claimableAmount,
+                    pendingAmount: "0",
                     rewardTokenAddress: userRewards.rewardToken,
                     merkleProof: userRewards.proof,
                     merkleProofLastUpdated: userRewards.merkleProofLastUpdated,

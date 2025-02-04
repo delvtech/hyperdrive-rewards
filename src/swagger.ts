@@ -50,6 +50,11 @@ const options: Options = {
               description: "Amount of tokens claimable.",
               example: "1000000000000000000",
             },
+            pendingAmount: {
+              type: "string",
+              description: "Amount of tokens pending, not yet claimable.",
+              example: "1000000000000000000",
+            },
             rewardTokenAddress: {
               type: "string",
               description: "Token address of the reward.",
@@ -71,6 +76,7 @@ const options: Options = {
             "chainId",
             "claimContractAddress",
             "claimableAmount",
+            "pendingAmount",
             "rewardTokenAddress",
             "merkleProof",
             "merkleProofLastUpdated",
