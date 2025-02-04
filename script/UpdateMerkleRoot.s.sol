@@ -4,7 +4,7 @@ pragma solidity 0.8.19;
 import "forge-std/Script.sol";
 import "src/contracts/HyperdriveRewards.sol";
 import { Merkle } from "universal-rewards-distributor/lib/murky/src/Merkle.sol";
-import { console2 as console } from "forge-std/console2.sol";
+import "universal-rewards-distributor/lib/openzeppelin-contracts/contracts/utils/Strings.sol";
 
 contract UpdateMerkleRoot is Script {
     struct MerkleEntry {
@@ -28,7 +28,6 @@ contract UpdateMerkleRoot is Script {
 
         // Read environment variables
         address contractAddress = vm.envAddress("REWARDS_CONTRACT");
-        console.log("contractAddress", contractAddress);
         string memory merkleJson = vm.envString("MERKLE_JSON");
 
         // Read JSON file containing Merkle data
@@ -39,15 +38,12 @@ contract UpdateMerkleRoot is Script {
             vm.parseJson(jsonContent, ".data"),
             (MerkleEntry[])
         );
-        console.log("merkleEntries");
 
         // Generate Merkle tree data and reward info
-        console.log("Processing Merkle Entries...");
         bytes32[] memory merkleData = new bytes32[](merkleEntries.length);
-        RewardData[] memory rewards = new RewardData[](merkleEntries.length);
+        string memory rewardsJson = '{"rewards": ['; // JSON array start
 
-        console.log("{");
-        console.log('  "rewards": [');
+
         for (uint256 i = 0; i < merkleEntries.length; i++) {
             uint256 claimableAmount = stringToUint(merkleEntries[i].claimable);
 
@@ -67,64 +63,41 @@ contract UpdateMerkleRoot is Script {
         }
 
         Merkle merkle = new Merkle();
-
         for (uint256 i = 0; i < merkleData.length; i++) {
             // Compute Merkle proof
             bytes32[] memory proof = merkle.getProof(merkleData, i);
-            // Store reward data
-            rewards[i] = RewardData({
-                user: merkleEntries[i].user,
-                chainId: 708, // Base chain ID (replace if needed)
-                claimContract: contractAddress,
-                claimableAmount: merkleEntries[i].claimable,
-                rewardToken: merkleEntries[i].token,
-                merkleProof: proof,
-                merkleProofLastUpdated: block.timestamp
-            });
-            console.log("    {");
-            console.log('      "user": "', merkleEntries[i].user, '",');
-            console.log('      "chainId": 708', ",");
-            console.log('      "claimContract": "', contractAddress, '",');
-            console.log(
-                '      "claimableAmount": ',
-                merkleEntries[i].claimable,
-                ","
-            );
-            console.log('      "rewardToken": "', merkleEntries[i].token, '",');
-            console.log('      "proof": ', bytes32ArrayToString(proof), ",");
-            console.log(
-                '      "merkleProofLastUpdated": ',
-                block.timestamp
-            );
-            console.log("    },");
+
+            // Manually serialize the struct as JSON
+            string memory rewardJson = "{";
+            rewardJson = string.concat(rewardJson, '"user": "', toChecksumAddress(merkleEntries[i].user), '",');
+            rewardJson = string.concat(rewardJson, '"chainId": 708,');
+            rewardJson = string.concat(rewardJson, '"claimContract": "', toChecksumAddress(contractAddress), '",');
+            rewardJson = string.concat(rewardJson, '"claimableAmount": "', merkleEntries[i].claimable, '",');
+            rewardJson = string.concat(rewardJson, '"rewardToken": "', toChecksumAddress(merkleEntries[i].token), '",');
+            rewardJson = string.concat(rewardJson, '"proof": ', bytes32ArrayToJson(proof), ",");
+            rewardJson = string.concat(rewardJson, '"merkleProofLastUpdated": ', Strings.toString(block.timestamp));
+            rewardJson = string.concat(rewardJson, "}");
+
+            // Append to rewards array JSON
+            rewardsJson = string.concat(rewardsJson, rewardJson);
+            if (i < merkleEntries.length - 1) {
+                rewardsJson = string.concat(rewardsJson, ",");
+            }
         }
-        console.log("  ]");
-        console.log("}");
+        rewardsJson = string.concat(rewardsJson, "]}"); // Close JSON array
 
-
-
-        bytes32[] memory _proof = rewards[0].merkleProof;
-        console.logBytes32(_proof[0]);
-        console.logBytes32(_proof[1]);
-        console.logBytes32(_proof[2]);
-        console.logBytes32(_proof[3]);
-
+        // Save rewards data to JSON file
+        string memory outputFilePath = "data/mainnet_test_out.json";
+        vm.writeFile(outputFilePath, rewardsJson);
 
         // Compute the Merkle root
         bytes32 merkleRoot = merkle.getRoot(merkleData);
-        console.log("Merkle root: ", bytes32ToHexString(merkleRoot));
-
-        // Save rewards data to JSON file
-        // string memory outputJson = vm.serializeJson(".rewards", rewards);
-        // string memory outputFilePath = "data/rewards_output.json";
-        // vm.writeFile(outputFilePath, outputJson);
-        // console.log("Rewards JSON written to:", outputFilePath);
+        console.log('merkleRoot', bytes32ToHexString(merkleRoot));
+        // vm.writeFile("data/merkle_root.json", vm.serializeJson(".merkleRoot", merkleRoot));
 
         // Update the Merkle root in the contract
         HyperdriveRewards rewardsContract = HyperdriveRewards(contractAddress);
         rewardsContract.setRoot(merkleRoot, bytes32(0));
-
-        console.log("Merkle root updated.");
 
         vm.stopBroadcast();
     }
@@ -140,29 +113,8 @@ contract UpdateMerkleRoot is Script {
         return result;
     }
 
-    // Convert uint256 to string
-    function uint2str(uint256 _i) internal pure returns (string memory) {
-        if (_i == 0) {
-            return "0";
-        }
-        uint256 j = _i;
-        uint256 length;
-        while (j != 0) {
-            length++;
-            j /= 10;
-        }
-        bytes memory bstr = new bytes(length);
-        while (_i != 0) {
-            length -= 1;
-            bstr[length] = bytes1(uint8(48 + uint256(_i % 10)));
-            _i /= 10;
-        }
-        return string(bstr);
-    }
-
-    function bytes32ArrayToString(
-        bytes32[] memory array
-    ) internal pure returns (string memory) {
+    // Convert bytes32 array to a JSON array
+    function bytes32ArrayToJson(bytes32[] memory array) internal pure returns (string memory) {
         string memory result = "["; // Start JSON array
         for (uint256 i = 0; i < array.length; i++) {
             result = string(
@@ -176,9 +128,7 @@ contract UpdateMerkleRoot is Script {
     }
 
     // Converts a bytes32 to a hex string (e.g., 0xabc123...)
-    function bytes32ToHexString(
-        bytes32 _bytes
-    ) internal pure returns (string memory) {
+    function bytes32ToHexString(bytes32 _bytes) internal pure returns (string memory) {
         bytes memory HEX_CHARS = "0123456789abcdef";
         bytes memory str = new bytes(2 + _bytes.length * 2);
         str[0] = "0";
@@ -188,5 +138,52 @@ contract UpdateMerkleRoot is Script {
             str[3 + i * 2] = HEX_CHARS[uint8(_bytes[i] & 0x0f)];
         }
         return string(str);
+    }
+
+    string internal constant _SYMBOLS = "0123456789abcdef";
+    string internal constant _CAPITAL = "0123456789ABCDEF";
+    function toChecksumAddress(address tempaddr) public pure returns (string memory) {
+        bytes memory lowercase = addressToLowercaseBytes(tempaddr); // Convert to lowercase hex without '0x'
+        bytes32 hashedAddr = keccak256(abi.encodePacked(lowercase)); // Hash the lowercase address
+
+        bytes memory result = new bytes(42); // Store checksum address with '0x' prepended
+        result[0] = "0";
+        result[1] = "x";
+
+        uint160 addrValue = uint160(tempaddr);
+        uint160 hashValue = uint160(bytes20(hashedAddr));
+
+        for (uint i = 41; i > 1; --i) { // Start from last hex digit
+            uint addrIndex = addrValue & 0xf; // Get last hex digit of address
+            uint hashIndex = hashValue & 0xf; // Get corresponding hash digit
+
+            if (hashIndex > 7) {
+                result[i] = bytes1(bytes(_CAPITAL)[addrIndex]); // Uppercase if hash digit > 7
+            } else {
+                result[i] = bytes1(bytes(_SYMBOLS)[addrIndex]); // Lowercase otherwise
+            }
+
+            addrValue >>= 4; // Move to the next hex digit
+            hashValue >>= 4;
+        }
+
+        return string(result);
+    }
+
+    function addressToLowercaseBytes(address x) internal pure returns (bytes memory) {
+        bytes memory s = new bytes(40);
+        for (uint i = 0; i < 20; i++) {
+            bytes1 b = bytes1(uint8(uint(uint160(x)) / (2 ** (8 * (19 - i)))));
+            bytes1 hi = bytes1(uint8(b) / 16);
+            bytes1 lo = bytes1(uint8(b) - 16 * uint8(hi));
+            s[2 * i] = getChar(hi);
+            s[2 * i + 1] = getChar(lo);
+        }
+        return s;
+    }
+
+    function getChar(bytes1 b) internal pure returns (bytes1 c) {
+        if (uint8(b) < 10) return bytes1(uint8(b) + 0x30); // 0-9
+        else return bytes1(uint8(b) + 0x57); // a-f
     }
 }
