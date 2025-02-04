@@ -1,1 +1,214 @@
-{"rewards": [{"user": "0x04F5c67Be870758E6D5200a15f7722B471EbB821","chainId": 708,"claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204","claimableAmount": "12803826510228852736","rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2","proof": ["0x77d4a92d62bc682c6cb7ac727c5cbb28b5cc5da409cc0fc4ff1bc1b90c9b3422","0x22f7a7ca8d373c4db667751c741e4de6a1ae9d18b88145d6d79442d1d04b5337","0x57c7928d4de582036aba9f38e4c124e464deda89621cb6eae6632acb7c264870","0xb9d34f391330ba536e7c70cee4e97269b6e1546d1b732efa4410f498ed3c6ae8"],"merkleProofLastUpdated": 1738707920},{"user": "0x38661B4DCE46eA80E7382F2d9e046993195614Da","chainId": 708,"claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204","claimableAmount": "879701015673852672","rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2","proof": ["0x6620fe0b097e82dbb378a8102601ece6c40038f3a057cc01c0713f7d4bd32970","0x22f7a7ca8d373c4db667751c741e4de6a1ae9d18b88145d6d79442d1d04b5337","0x57c7928d4de582036aba9f38e4c124e464deda89621cb6eae6632acb7c264870","0xb9d34f391330ba536e7c70cee4e97269b6e1546d1b732efa4410f498ed3c6ae8"],"merkleProofLastUpdated": 1738707920},{"user": "0x5659a5DFcfd0a041677227cEF96bC2365870B70E","chainId": 708,"claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204","claimableAmount": "5203328948755996672","rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2","proof": ["0x306072eb7a69ed03caec275a9532685af4e1c6404f1df5812ea946ee3782c1b4","0x043cb240f35f890fc279a42b36b054c4dff845fc7c7bf4dad63a400d70d50703","0x57c7928d4de582036aba9f38e4c124e464deda89621cb6eae6632acb7c264870","0xb9d34f391330ba536e7c70cee4e97269b6e1546d1b732efa4410f498ed3c6ae8"],"merkleProofLastUpdated": 1738707920},{"user": "0x5bEd4EC6af7697c955c8D72cccA573D590957F0D","chainId": 708,"claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204","claimableAmount": "3679117783098205696","rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2","proof": ["0xfc69d5a676cb447ce02d0b99ef6cf49ae9fdbb92ce0bdfd79d161e438e0477bc","0x043cb240f35f890fc279a42b36b054c4dff845fc7c7bf4dad63a400d70d50703","0x57c7928d4de582036aba9f38e4c124e464deda89621cb6eae6632acb7c264870","0xb9d34f391330ba536e7c70cee4e97269b6e1546d1b732efa4410f498ed3c6ae8"],"merkleProofLastUpdated": 1738707920},{"user": "0x6a946845A742a80a07Ce1181E68d91D3F0232EC0","chainId": 708,"claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204","claimableAmount": "7588276591890558976","rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2","proof": ["0x66a34b53ca4a2308302a58b5f8498a1fefc4c4ce28de296f16d8a572b2ac42ed","0xddcc0109d133b6a05af47ba9a5e5c3f26c37d4069fae4c239ee70288d7321158","0x11e54794d78799964c096cdb4b940e8ea9737e8966d8594aacb64f1120f7ecc5","0xb9d34f391330ba536e7c70cee4e97269b6e1546d1b732efa4410f498ed3c6ae8"],"merkleProofLastUpdated": 1738707920},{"user": "0x7837560135d66E8cf745e665781574178Da26097","chainId": 708,"claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204","claimableAmount": "2781592997262382080","rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2","proof": ["0x5a519acdd16228433571f2945c02f971fecada58cfa2bbf337cbb43ef03605c1","0xddcc0109d133b6a05af47ba9a5e5c3f26c37d4069fae4c239ee70288d7321158","0x11e54794d78799964c096cdb4b940e8ea9737e8966d8594aacb64f1120f7ecc5","0xb9d34f391330ba536e7c70cee4e97269b6e1546d1b732efa4410f498ed3c6ae8"],"merkleProofLastUpdated": 1738707920},{"user": "0x849D52316331967b6fF1198e5E32A0eB168D039d","chainId": 708,"claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204","claimableAmount": "4073342152237573120","rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2","proof": ["0x4a68593bef467029dc1e461902367d581f4f60bf4ce10310635492148609bcff","0xf575f95e954b3f2b50875a24e15c4e305095a95280627d129e4c77c756fe3edd","0x11e54794d78799964c096cdb4b940e8ea9737e8966d8594aacb64f1120f7ecc5","0xb9d34f391330ba536e7c70cee4e97269b6e1546d1b732efa4410f498ed3c6ae8"],"merkleProofLastUpdated": 1738707920},{"user": "0x8f16Dd690317eA1B6b2690685E2b38b293eB0cd3","chainId": 708,"claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204","claimableAmount": "3245236620542858752","rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2","proof": ["0x51d63bdc949abd85f93a3be09321b1366fc6e3b66edfcf7c53f607a78f394cd5","0xf575f95e954b3f2b50875a24e15c4e305095a95280627d129e4c77c756fe3edd","0x11e54794d78799964c096cdb4b940e8ea9737e8966d8594aacb64f1120f7ecc5","0xb9d34f391330ba536e7c70cee4e97269b6e1546d1b732efa4410f498ed3c6ae8"],"merkleProofLastUpdated": 1738707920},{"user": "0x91cfD910E0B93911482706e9f1523541C6c1f837","chainId": 708,"claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204","claimableAmount": "6126214892891816960","rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2","proof": ["0x479df01bf75d64e84f5bbe321c2b07b36699c77cdfebaa92ecd10facbb141c7f","0xb91d9b68a4554481e19367511ef22aa3acddbaf2fb6f9e1ed0e110b845517bf6","0x732fa02dfdcbfd8102516f2251da40e286f9a0a5863d1fd7df6baf3fc372db34","0x8948bd5bc45fc1d370f41e9f92140d0a20bf8a439374c3edaedf393124a6c903"],"merkleProofLastUpdated": 1738707920},{"user": "0x9eB168Ab44B7c479431681558FdF34230c969DE9","chainId": 708,"claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204","claimableAmount": "19358666982912948224","rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2","proof": ["0x34658686ea6271f685ff7dc1ad5a9db21146ee7344855e26cca1b5318c85130f","0xb91d9b68a4554481e19367511ef22aa3acddbaf2fb6f9e1ed0e110b845517bf6","0x732fa02dfdcbfd8102516f2251da40e286f9a0a5863d1fd7df6baf3fc372db34","0x8948bd5bc45fc1d370f41e9f92140d0a20bf8a439374c3edaedf393124a6c903"],"merkleProofLastUpdated": 1738707920},{"user": "0xa408f4265555d2ca674F3205c36Afb5dba3245A6","chainId": 708,"claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204","claimableAmount": "8036466506815773696","rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2","proof": ["0x0e638c51066d34c5d6c7f4feca03c78552bf6f2d65017642ebfac5c6d2fb7e27","0x7966f1156a00ca81d5549171b31ebc214d2c48c43df7969b3e08dede4b5a99b7","0x732fa02dfdcbfd8102516f2251da40e286f9a0a5863d1fd7df6baf3fc372db34","0x8948bd5bc45fc1d370f41e9f92140d0a20bf8a439374c3edaedf393124a6c903"],"merkleProofLastUpdated": 1738707920},{"user": "0xAABd5fBcb8ad62D4FbBB02a2E9769a9F2EE7e883","chainId": 708,"claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204","claimableAmount": "9001554697715642368","rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2","proof": ["0x44cc4c2a0d1e5b6773b79f555c835fe9817936eb08c8fcd5804fec1ee042dab9","0x7966f1156a00ca81d5549171b31ebc214d2c48c43df7969b3e08dede4b5a99b7","0x732fa02dfdcbfd8102516f2251da40e286f9a0a5863d1fd7df6baf3fc372db34","0x8948bd5bc45fc1d370f41e9f92140d0a20bf8a439374c3edaedf393124a6c903"],"merkleProofLastUpdated": 1738707920},{"user": "0xB6022F04637AC52c1e1C8Ca1b1A3Ce21D61949b6","chainId": 708,"claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204","claimableAmount": "3144723436360416768","rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2","proof": ["0xca0839d00399261321d3ff08756a27a48bfe705d7a540d5deaf1c2b35ece4949","0xb1cd8ddf666c0ec08827e48b8308ae0b441bc28ccd450397fbe314e604b72d2d","0xb3b9e4e1d0ab1e39d6e47289bb09d2aed03e0b456bbb536c88788f5c6ef8c497","0x8948bd5bc45fc1d370f41e9f92140d0a20bf8a439374c3edaedf393124a6c903"],"merkleProofLastUpdated": 1738707920},{"user": "0xC13Dbe26e27f3702A71664cc026FA3d4DB56c3Bb","chainId": 708,"claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204","claimableAmount": "3376107605183756800","rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2","proof": ["0xc247eaadb9227139f2b8f9436ea2e87548c85704f650e7dd25fb55a25da62056","0xb1cd8ddf666c0ec08827e48b8308ae0b441bc28ccd450397fbe314e604b72d2d","0xb3b9e4e1d0ab1e39d6e47289bb09d2aed03e0b456bbb536c88788f5c6ef8c497","0x8948bd5bc45fc1d370f41e9f92140d0a20bf8a439374c3edaedf393124a6c903"],"merkleProofLastUpdated": 1738707920},{"user": "0xdF7Eea635c890caf0467Ab9912d96b924A0Ce482","chainId": 708,"claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204","claimableAmount": "2907674616824322048","rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2","proof": ["0x0000000000000000000000000000000000000000000000000000000000000000","0x60c1f699f556c09f25c489e4c30387c8d8659566cb93081657ba937cd49fef35","0xb3b9e4e1d0ab1e39d6e47289bb09d2aed03e0b456bbb536c88788f5c6ef8c497","0x8948bd5bc45fc1d370f41e9f92140d0a20bf8a439374c3edaedf393124a6c903"],"merkleProofLastUpdated": 1738707920}]}
+{
+  "rewards": [
+    {
+      "user": "0x04F5c67Be870758E6D5200a15f7722B471EbB821",
+      "chainId": 708,
+      "claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204",
+      "claimableAmount": "12803826510228852736",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0x77d4a92d62bc682c6cb7ac727c5cbb28b5cc5da409cc0fc4ff1bc1b90c9b3422",
+        "0x22f7a7ca8d373c4db667751c741e4de6a1ae9d18b88145d6d79442d1d04b5337",
+        "0x57c7928d4de582036aba9f38e4c124e464deda89621cb6eae6632acb7c264870",
+        "0xb9d34f391330ba536e7c70cee4e97269b6e1546d1b732efa4410f498ed3c6ae8"
+      ],
+      "merkleProofLastUpdated": 1738707920
+    },
+    {
+      "user": "0x38661B4DCE46eA80E7382F2d9e046993195614Da",
+      "chainId": 708,
+      "claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204",
+      "claimableAmount": "879701015673852672",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0x6620fe0b097e82dbb378a8102601ece6c40038f3a057cc01c0713f7d4bd32970",
+        "0x22f7a7ca8d373c4db667751c741e4de6a1ae9d18b88145d6d79442d1d04b5337",
+        "0x57c7928d4de582036aba9f38e4c124e464deda89621cb6eae6632acb7c264870",
+        "0xb9d34f391330ba536e7c70cee4e97269b6e1546d1b732efa4410f498ed3c6ae8"
+      ],
+      "merkleProofLastUpdated": 1738707920
+    },
+    {
+      "user": "0x5659a5DFcfd0a041677227cEF96bC2365870B70E",
+      "chainId": 708,
+      "claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204",
+      "claimableAmount": "5203328948755996672",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0x306072eb7a69ed03caec275a9532685af4e1c6404f1df5812ea946ee3782c1b4",
+        "0x043cb240f35f890fc279a42b36b054c4dff845fc7c7bf4dad63a400d70d50703",
+        "0x57c7928d4de582036aba9f38e4c124e464deda89621cb6eae6632acb7c264870",
+        "0xb9d34f391330ba536e7c70cee4e97269b6e1546d1b732efa4410f498ed3c6ae8"
+      ],
+      "merkleProofLastUpdated": 1738707920
+    },
+    {
+      "user": "0x5bEd4EC6af7697c955c8D72cccA573D590957F0D",
+      "chainId": 708,
+      "claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204",
+      "claimableAmount": "3679117783098205696",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0xfc69d5a676cb447ce02d0b99ef6cf49ae9fdbb92ce0bdfd79d161e438e0477bc",
+        "0x043cb240f35f890fc279a42b36b054c4dff845fc7c7bf4dad63a400d70d50703",
+        "0x57c7928d4de582036aba9f38e4c124e464deda89621cb6eae6632acb7c264870",
+        "0xb9d34f391330ba536e7c70cee4e97269b6e1546d1b732efa4410f498ed3c6ae8"
+      ],
+      "merkleProofLastUpdated": 1738707920
+    },
+    {
+      "user": "0x6a946845A742a80a07Ce1181E68d91D3F0232EC0",
+      "chainId": 708,
+      "claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204",
+      "claimableAmount": "7588276591890558976",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0x66a34b53ca4a2308302a58b5f8498a1fefc4c4ce28de296f16d8a572b2ac42ed",
+        "0xddcc0109d133b6a05af47ba9a5e5c3f26c37d4069fae4c239ee70288d7321158",
+        "0x11e54794d78799964c096cdb4b940e8ea9737e8966d8594aacb64f1120f7ecc5",
+        "0xb9d34f391330ba536e7c70cee4e97269b6e1546d1b732efa4410f498ed3c6ae8"
+      ],
+      "merkleProofLastUpdated": 1738707920
+    },
+    {
+      "user": "0x7837560135d66E8cf745e665781574178Da26097",
+      "chainId": 708,
+      "claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204",
+      "claimableAmount": "2781592997262382080",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0x5a519acdd16228433571f2945c02f971fecada58cfa2bbf337cbb43ef03605c1",
+        "0xddcc0109d133b6a05af47ba9a5e5c3f26c37d4069fae4c239ee70288d7321158",
+        "0x11e54794d78799964c096cdb4b940e8ea9737e8966d8594aacb64f1120f7ecc5",
+        "0xb9d34f391330ba536e7c70cee4e97269b6e1546d1b732efa4410f498ed3c6ae8"
+      ],
+      "merkleProofLastUpdated": 1738707920
+    },
+    {
+      "user": "0x849D52316331967b6fF1198e5E32A0eB168D039d",
+      "chainId": 708,
+      "claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204",
+      "claimableAmount": "4073342152237573120",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0x4a68593bef467029dc1e461902367d581f4f60bf4ce10310635492148609bcff",
+        "0xf575f95e954b3f2b50875a24e15c4e305095a95280627d129e4c77c756fe3edd",
+        "0x11e54794d78799964c096cdb4b940e8ea9737e8966d8594aacb64f1120f7ecc5",
+        "0xb9d34f391330ba536e7c70cee4e97269b6e1546d1b732efa4410f498ed3c6ae8"
+      ],
+      "merkleProofLastUpdated": 1738707920
+    },
+    {
+      "user": "0x8f16Dd690317eA1B6b2690685E2b38b293eB0cd3",
+      "chainId": 708,
+      "claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204",
+      "claimableAmount": "3245236620542858752",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0x51d63bdc949abd85f93a3be09321b1366fc6e3b66edfcf7c53f607a78f394cd5",
+        "0xf575f95e954b3f2b50875a24e15c4e305095a95280627d129e4c77c756fe3edd",
+        "0x11e54794d78799964c096cdb4b940e8ea9737e8966d8594aacb64f1120f7ecc5",
+        "0xb9d34f391330ba536e7c70cee4e97269b6e1546d1b732efa4410f498ed3c6ae8"
+      ],
+      "merkleProofLastUpdated": 1738707920
+    },
+    {
+      "user": "0x91cfD910E0B93911482706e9f1523541C6c1f837",
+      "chainId": 708,
+      "claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204",
+      "claimableAmount": "6126214892891816960",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0x479df01bf75d64e84f5bbe321c2b07b36699c77cdfebaa92ecd10facbb141c7f",
+        "0xb91d9b68a4554481e19367511ef22aa3acddbaf2fb6f9e1ed0e110b845517bf6",
+        "0x732fa02dfdcbfd8102516f2251da40e286f9a0a5863d1fd7df6baf3fc372db34",
+        "0x8948bd5bc45fc1d370f41e9f92140d0a20bf8a439374c3edaedf393124a6c903"
+      ],
+      "merkleProofLastUpdated": 1738707920
+    },
+    {
+      "user": "0x9eB168Ab44B7c479431681558FdF34230c969DE9",
+      "chainId": 708,
+      "claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204",
+      "claimableAmount": "19358666982912948224",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0x34658686ea6271f685ff7dc1ad5a9db21146ee7344855e26cca1b5318c85130f",
+        "0xb91d9b68a4554481e19367511ef22aa3acddbaf2fb6f9e1ed0e110b845517bf6",
+        "0x732fa02dfdcbfd8102516f2251da40e286f9a0a5863d1fd7df6baf3fc372db34",
+        "0x8948bd5bc45fc1d370f41e9f92140d0a20bf8a439374c3edaedf393124a6c903"
+      ],
+      "merkleProofLastUpdated": 1738707920
+    },
+    {
+      "user": "0xa408f4265555d2ca674F3205c36Afb5dba3245A6",
+      "chainId": 708,
+      "claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204",
+      "claimableAmount": "8036466506815773696",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0x0e638c51066d34c5d6c7f4feca03c78552bf6f2d65017642ebfac5c6d2fb7e27",
+        "0x7966f1156a00ca81d5549171b31ebc214d2c48c43df7969b3e08dede4b5a99b7",
+        "0x732fa02dfdcbfd8102516f2251da40e286f9a0a5863d1fd7df6baf3fc372db34",
+        "0x8948bd5bc45fc1d370f41e9f92140d0a20bf8a439374c3edaedf393124a6c903"
+      ],
+      "merkleProofLastUpdated": 1738707920
+    },
+    {
+      "user": "0xAABd5fBcb8ad62D4FbBB02a2E9769a9F2EE7e883",
+      "chainId": 708,
+      "claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204",
+      "claimableAmount": "9001554697715642368",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0x44cc4c2a0d1e5b6773b79f555c835fe9817936eb08c8fcd5804fec1ee042dab9",
+        "0x7966f1156a00ca81d5549171b31ebc214d2c48c43df7969b3e08dede4b5a99b7",
+        "0x732fa02dfdcbfd8102516f2251da40e286f9a0a5863d1fd7df6baf3fc372db34",
+        "0x8948bd5bc45fc1d370f41e9f92140d0a20bf8a439374c3edaedf393124a6c903"
+      ],
+      "merkleProofLastUpdated": 1738707920
+    },
+    {
+      "user": "0xB6022F04637AC52c1e1C8Ca1b1A3Ce21D61949b6",
+      "chainId": 708,
+      "claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204",
+      "claimableAmount": "3144723436360416768",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0xca0839d00399261321d3ff08756a27a48bfe705d7a540d5deaf1c2b35ece4949",
+        "0xb1cd8ddf666c0ec08827e48b8308ae0b441bc28ccd450397fbe314e604b72d2d",
+        "0xb3b9e4e1d0ab1e39d6e47289bb09d2aed03e0b456bbb536c88788f5c6ef8c497",
+        "0x8948bd5bc45fc1d370f41e9f92140d0a20bf8a439374c3edaedf393124a6c903"
+      ],
+      "merkleProofLastUpdated": 1738707920
+    },
+    {
+      "user": "0xC13Dbe26e27f3702A71664cc026FA3d4DB56c3Bb",
+      "chainId": 708,
+      "claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204",
+      "claimableAmount": "3376107605183756800",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0xc247eaadb9227139f2b8f9436ea2e87548c85704f650e7dd25fb55a25da62056",
+        "0xb1cd8ddf666c0ec08827e48b8308ae0b441bc28ccd450397fbe314e604b72d2d",
+        "0xb3b9e4e1d0ab1e39d6e47289bb09d2aed03e0b456bbb536c88788f5c6ef8c497",
+        "0x8948bd5bc45fc1d370f41e9f92140d0a20bf8a439374c3edaedf393124a6c903"
+      ],
+      "merkleProofLastUpdated": 1738707920
+    },
+    {
+      "user": "0xdF7Eea635c890caf0467Ab9912d96b924A0Ce482",
+      "chainId": 708,
+      "claimContract": "0xfD3e0cEe740271f070607aEddd0Bf4Cf99C92204",
+      "claimableAmount": "2907674616824322048",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "0x60c1f699f556c09f25c489e4c30387c8d8659566cb93081657ba937cd49fef35",
+        "0xb3b9e4e1d0ab1e39d6e47289bb09d2aed03e0b456bbb536c88788f5c6ef8c497",
+        "0x8948bd5bc45fc1d370f41e9f92140d0a20bf8a439374c3edaedf393124a6c903"
+      ],
+      "merkleProofLastUpdated": 1738707920
+    }
+  ]
+}
