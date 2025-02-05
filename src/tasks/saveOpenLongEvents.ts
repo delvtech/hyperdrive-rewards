@@ -1,63 +1,34 @@
+import { HyperdriveConfig } from "@delvtech/hyperdrive-appconfig/dist/index.cjs";
 import "dotenv/config";
-import { Address, formatUnits, fromHex, Log, PublicClient, toHex } from "viem";
+import { PublicClient } from "viem";
 import { openLongAbiEvent } from "../abi/events";
 import { hyperdriveReadAbi } from "../abi/hyperdriveRead";
 import { AppDataSource } from "../dataSource";
 import { PoolInfoAtBlock } from "../entity/PoolInfoAtBlock";
-import { Trade } from "../entity/TradeEvent";
-import { getDeploymentBlock } from "../helpers/etherescan";
-
-type OpenLongLogs = Log<
-    bigint,
-    number,
-    false,
-    typeof openLongAbiEvent,
-    false,
-    undefined,
-    "OpenLong"
->[];
-
-type PoolInfosRaw = {
-    shareReserves: bigint;
-    shareAdjustment: bigint;
-    zombieBaseProceeds: bigint;
-    zombieShareReserves: bigint;
-    bondReserves: bigint;
-    vaultSharePrice: bigint;
-    longsOutstanding: bigint;
-    longAverageMaturityTime: bigint;
-    shortsOutstanding: bigint;
-    shortAverageMaturityTime: bigint;
-    lpTotalSupply: bigint;
-    lpSharePrice: bigint;
-    withdrawalSharesReadyToWithdraw: bigint;
-    withdrawalSharesProceeds: bigint;
-    longExposure: bigint;
-};
+import { Trade } from "../entity/Trade";
+import { assetIdBigIntToHex } from "../helpers/assets";
+import { getBlockTimestamp } from "../helpers/block";
 
 /**
- * Fetches OpenLong events from the Hyperdrive contract and saves them to the PostgreSQL database.
- * @param hyperdriveAddress The address of the Hyperdrive contract.
+ * Fetches and processes "OpenLong" events from the Hyperdrive smart contract
+ * starting from the deployment block to the latest block. Retrieves balance
+ * and pool info at each event's block, and stores the data in the PostgreSQL
+ * database.
+ *
+ * @param hyperdriveAddress - The address of the Hyperdrive contract to fetch
+ *                            events from.
+ * @param client - The PublicClient instance to interact with the blockchain.
  */
 export async function saveOpenLongEvents(
-    hyperdriveAddress: Address,
+    hyperdrive: HyperdriveConfig,
     client: PublicClient,
 ) {
-    // Get the block number when the contract was deployed
-    const deploymentBlock = await getDeploymentBlock(hyperdriveAddress);
-    console.log("deploymentBlock", deploymentBlock);
-
-    if (!deploymentBlock) {
-        console.log("No deployment block found");
-        return;
-    }
-
-    console.log(`Fetching OpenLong events since block ${deploymentBlock}...`);
+    const { address, initializationBlock } = hyperdrive;
 
     const logs = await client.getLogs({
-        address: hyperdriveAddress,
+        address,
         event: openLongAbiEvent,
-        fromBlock: deploymentBlock,
+        fromBlock: BigInt(initializationBlock),
         toBlock: "latest",
     });
 
@@ -66,53 +37,13 @@ export async function saveOpenLongEvents(
         return;
     }
 
-    const { balances, poolInfosRaw } = await getBalancesAndPoolInfos(
-        hyperdriveAddress,
-        logs,
-        client,
-    );
-
-    const { tradeEvents, poolInfos } = processOpenLongEvents(
-        hyperdriveAddress,
-        logs,
-        balances,
-        poolInfosRaw,
-    );
-
-    await AppDataSource.createQueryBuilder()
-        .insert()
-        .into(Trade)
-        .values(tradeEvents)
-        .orIgnore() // This will ignore duplicate transaction hashes
-        .execute();
-
-    await AppDataSource.createQueryBuilder()
-        .insert()
-        .into(PoolInfoAtBlock)
-        .values(poolInfos)
-        .orIgnore()
-        .execute();
-
-    console.log("Done saving OpenLong events.");
-}
-
-async function getBalancesAndPoolInfos(
-    hyperdriveAddress: Address,
-    logs: OpenLongLogs,
-    client: PublicClient,
-): Promise<{
-    balances: bigint[];
-    poolInfosRaw: PoolInfosRaw[];
-}> {
-    console.log(`Found ${logs.length} OpenLong events`);
-
     const balancePromises = Promise.all(
         logs.map((log) => {
-            const args = (log as any).args;
+            const args = log.args;
             const { trader, assetId } = args;
             // Get balanceOf at the event's block
             return client.readContract({
-                address: hyperdriveAddress,
+                address,
                 abi: hyperdriveReadAbi,
                 functionName: "balanceOf",
                 blockNumber: log.blockNumber,
@@ -125,7 +56,7 @@ async function getBalancesAndPoolInfos(
         logs.map((log) => {
             // Get pool info at the event's block
             return client.readContract({
-                address: hyperdriveAddress,
+                address,
                 abi: hyperdriveReadAbi,
                 functionName: "getPoolInfo",
                 blockNumber: log.blockNumber,
@@ -133,37 +64,38 @@ async function getBalancesAndPoolInfos(
         }),
     );
 
-    const [balances, poolInfosRaw] = await Promise.all([
+    const blockTimestampPromises = Promise.all(
+        logs.map((log) => {
+            return getBlockTimestamp(client, log.blockNumber);
+        }),
+    );
+
+    const [balances, poolInfosRaw, blockTimestamps] = await Promise.all([
         balancePromises,
         poolInfoPromises,
+        blockTimestampPromises,
     ]);
 
-    return { balances, poolInfosRaw };
-}
-
-function processOpenLongEvents(
-    hyperdriveAddress: Address,
-    logs: OpenLongLogs,
-    balances: bigint[],
-    poolInfosRaw: PoolInfosRaw[],
-) {
     const tradeEvents: Trade[] = [];
     const poolInfos: PoolInfoAtBlock[] = [];
 
     // populate tradeEvents and poolInfos
     logs.forEach((log, index) => {
-        const args = (log as any).args;
-        const { trader, assetId, amount, vaultSharePrice, asBase, bondAmount } =
-            args;
+        const { args, eventName } = log;
+        const {
+            trader,
+            assetId,
+            maturityTime,
+            amount,
+            vaultSharePrice,
+            asBase,
+            bondAmount,
+        } = args;
         const balanceAtBlock = balances[index];
         const poolInfoRaw = poolInfosRaw[index];
 
-        const maturityTimeHex = "0x".concat(
-            toHex(assetId!).slice(-8),
-        ) as `0x${string}`;
-        const maturityTime = fromHex(maturityTimeHex, "number");
-        console.log("maturityTime", maturityTime);
         const blockNumber = Number(log.blockNumber);
+        const blockTime = Number(blockTimestamps[index]);
         const transactionHash = log.transactionHash;
 
         console.log(
@@ -181,7 +113,6 @@ function processOpenLongEvents(
             { name: "asBase", value: asBase },
         ];
 
-        // Save the event in PostgreSQL
         if (
             !trader ||
             !assetId ||
@@ -195,24 +126,28 @@ function processOpenLongEvents(
             items.forEach((item) => console.log(`${item.name}: ${item.value}`));
             return;
         }
+
         const tradeEvent = new Trade();
+
+        tradeEvent.type = eventName;
+        tradeEvent.hyperdriveAddress = address;
         tradeEvent.transactionHash = transactionHash;
-        tradeEvent.hyperdriveAddress = hyperdriveAddress;
         tradeEvent.trader = trader;
-        tradeEvent.assetId = assetId.toString();
+        tradeEvent.assetId = assetIdBigIntToHex(assetId);
         tradeEvent.blockNumber = blockNumber;
+        tradeEvent.blockTime = blockTime;
         tradeEvent.maturityTime = maturityTime.toString();
-        tradeEvent.amount = formatUnits(amount, 18);
-        tradeEvent.vaultSharePrice = formatUnits(vaultSharePrice, 18);
+        tradeEvent.amount = amount.toString();
+        tradeEvent.vaultSharePrice = vaultSharePrice.toString();
         tradeEvent.asBase = asBase;
-        tradeEvent.bondAmount = formatUnits(bondAmount, 18);
-        tradeEvent.balanceAtBlock = formatUnits(balanceAtBlock, 18);
-        tradeEvent.baseProceeds = "0";
+        tradeEvent.bondAmount = bondAmount.toString();
+        tradeEvent.balanceAtBlock = balanceAtBlock.toString();
+        tradeEvent.baseProceeds = 0n.toString();
 
         // Save pool info into the database separately, using BigInt
         const poolInfoAtBlock = new PoolInfoAtBlock();
         poolInfoAtBlock.blockNumber = blockNumber;
-        poolInfoAtBlock.hyperdriveAddress = hyperdriveAddress;
+        poolInfoAtBlock.hyperdriveAddress = address;
         poolInfoAtBlock.shareReserves = poolInfoRaw.shareReserves.toString();
         poolInfoAtBlock.shareAdjustment =
             poolInfoRaw.shareAdjustment.toString();
@@ -243,5 +178,19 @@ function processOpenLongEvents(
         poolInfos.push(poolInfoAtBlock);
     });
 
-    return { tradeEvents, poolInfos };
+    await AppDataSource.createQueryBuilder()
+        .insert()
+        .into(Trade)
+        .values(tradeEvents)
+        .orIgnore() // This will ignore duplicate transaction hashes
+        .execute();
+
+    await AppDataSource.createQueryBuilder()
+        .insert()
+        .into(PoolInfoAtBlock)
+        .values(poolInfos)
+        .orIgnore()
+        .execute();
+
+    console.log("Done saving OpenLong events.");
 }

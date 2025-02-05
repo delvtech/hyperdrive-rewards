@@ -1,11 +1,8 @@
-import { FixedNumber } from "ethers";
 import { Request, Response, Router } from "express";
 import fs from "fs";
 import path from "path";
 import { Address } from "viem";
-import { fetchAllHyperdriveAddresses } from "./query/poolsQuery";
-import { fetchRewardsForUser } from "./query/rewardsQuery";
-import { fetchWalletAddresses } from "./wallet";
+import { fetchRewardsForUserNew } from "./query/rewardsQuery";
 
 // 0xA29A771683b4857bBd16e1e4f27D5B6bfF53209B // morpho usde/DAI
 // 0x7548c4F665402BAb3a4298B88527824B7b18Fe27 // morpho wsETH/USDA
@@ -61,7 +58,7 @@ rewardsRouter.get(
     "/user/:address",
     async (req: RewardsRequest, res: Response) => {
         const { address } = req.params;
-        const rewards = await fetchRewardsForUser(address);
+        const rewards = await fetchRewardsForUserNew(address);
 
         res.json(rewards);
     },
@@ -151,34 +148,3 @@ function getStubbedResponse(address: Address): RewardsResponse | null {
         return null;
     }
 }
-
-rewardsRouter.get("/all", async (req: RewardsRequest, res: Response) => {
-    const addresses = await fetchWalletAddresses(1);
-    const allRewards = await Promise.all(
-        addresses.map((address) => fetchRewardsForUser(address)),
-    );
-
-    const rewardsByPool: Record<
-        string,
-        { LP: FixedNumber[]; Short: FixedNumber[] }
-    > = {};
-    const hyperdriveAddresses = await fetchAllHyperdriveAddresses(1);
-    hyperdriveAddresses.forEach((address) => {
-        rewardsByPool[address] = { LP: [], Short: [] };
-    });
-
-    allRewards.forEach((userRewards) => {
-        userRewards.percentLPByPool.forEach(
-            ({ hyperdrive_address, percentLP }) => {
-                rewardsByPool[hyperdrive_address].LP.push(percentLP);
-            },
-        );
-        userRewards.percentShortByPool.forEach(
-            ({ hyperdrive_address, percentShort }) => {
-                rewardsByPool[hyperdrive_address].Short.push(percentShort);
-            },
-        );
-    });
-
-    res.json(rewardsByPool);
-});

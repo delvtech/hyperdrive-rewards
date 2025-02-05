@@ -60,6 +60,7 @@ export const openLongAbiEvent = {
     inputs: [
         { name: "trader", type: "address", indexed: true },
         { name: "assetId", type: "uint256", indexed: true },
+        { name: "maturityTime", type: "uint256", indexed: false },
         { name: "amount", type: "uint256", indexed: false },
         { name: "vaultSharePrice", type: "uint256", indexed: false },
         { name: "asBase", type: "bool", indexed: false },
@@ -114,5 +115,17 @@ export const closeShortAbiEvent = {
         { name: "basePayment", type: "uint256", indexed: false },
         { name: "bondAmount", type: "uint256", indexed: false },
         { name: "extraData", type: "bytes", indexed: false },
+    ],
+} as const;
+
+export const transferSingleAbiEvent = {
+    type: "event",
+    name: "TransferSingle",
+    inputs: [
+        { name: "operator", type: "address", indexed: true },
+        { name: "from", type: "address", indexed: true },
+        { name: "to", type: "address", indexed: true },
+        { name: "id", type: "uint256", indexed: false },
+        { name: "value", type: "uint256", indexed: false },
     ],
 } as const;

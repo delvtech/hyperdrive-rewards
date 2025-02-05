@@ -1,37 +1,26 @@
+import { HyperdriveConfig } from "@delvtech/hyperdrive-appconfig/dist/index.cjs";
 import "dotenv/config";
-import { Address, formatUnits, PublicClient } from "viem";
+import { PublicClient } from "viem";
 import { removeLiquidityAbiEvent } from "../abi/events";
 import { hyperdriveReadAbi } from "../abi/hyperdriveRead";
 import { AppDataSource } from "../dataSource";
 import { PoolInfoAtBlock } from "../entity/PoolInfoAtBlock";
-import { Trade } from "../entity/TradeEvent";
-import { getDeploymentBlock } from "../helpers/etherescan";
+import { Trade } from "../entity/Trade";
+import { assetIdBigIntToHex } from "../helpers/assets";
+import { getBlockTimestamp } from "../helpers/block";
 
-async function saveRemoveLiquidityEvents(
-    hyperdriveAddress: Address,
+export async function saveRemoveLiquidityEvents(
+    hyperdrive: HyperdriveConfig,
     client: PublicClient,
 ) {
-    // Get the block number when the contract was deployed
-    const deploymentBlock = await getDeploymentBlock(hyperdriveAddress);
-    console.log("deploymentBlock", deploymentBlock);
-
-    if (!deploymentBlock) {
-        console.log("No deployment block found");
-        return;
-    }
-
-    console.log(
-        `Fetching AddLiquidity events since block ${deploymentBlock}...`,
-    );
+    const { address, initializationBlock } = hyperdrive;
 
     const logs = await client.getLogs({
-        address: hyperdriveAddress,
+        address,
         event: removeLiquidityAbiEvent,
-        fromBlock: BigInt(deploymentBlock),
+        fromBlock: BigInt(initializationBlock),
         toBlock: "latest",
     });
-
-    console.log(`Found ${logs.length} RemoveLiquidityevents`);
 
     if (!logs) {
         console.log("No OpenLong events found");
@@ -44,7 +33,7 @@ async function saveRemoveLiquidityEvents(
             const { provider } = args;
             // Get balanceOf at the event's block
             return client.readContract({
-                address: hyperdriveAddress,
+                address: address,
                 abi: hyperdriveReadAbi,
                 functionName: "balanceOf",
                 blockNumber: log.blockNumber,
@@ -57,7 +46,7 @@ async function saveRemoveLiquidityEvents(
         logs.map((log) => {
             // Get pool info at the event's block
             return client.readContract({
-                address: hyperdriveAddress,
+                address: address,
                 abi: hyperdriveReadAbi,
                 functionName: "getPoolInfo",
                 blockNumber: log.blockNumber,
@@ -65,9 +54,16 @@ async function saveRemoveLiquidityEvents(
         }),
     );
 
-    const [balances, poolInfosRaw] = await Promise.all([
+    const blockTimestampPromises = Promise.all(
+        logs.map((log) => {
+            return getBlockTimestamp(client, log.blockNumber);
+        }),
+    );
+
+    const [balances, poolInfosRaw, blockTimestamps] = await Promise.all([
         balancePromises,
         poolInfoPromises,
+        blockTimestampPromises,
     ]);
 
     const tradeEvents: Trade[] = [];
@@ -75,9 +71,10 @@ async function saveRemoveLiquidityEvents(
 
     // populate tradeEvents and poolInfos
     logs.forEach((log, index) => {
-        const args = log.args;
+        const { args, eventName } = log;
         const { provider, amount, vaultSharePrice, asBase } = args;
         const balanceAtBlock = balances[index];
+        const blockTime = Number(blockTimestamps[index]);
         const poolInfoRaw = poolInfosRaw[index];
 
         const blockNumber = Number(log.blockNumber);
@@ -109,23 +106,25 @@ async function saveRemoveLiquidityEvents(
             return;
         }
         const tradeEvent = new Trade();
-        tradeEvent.hyperdriveAddress = hyperdriveAddress;
+        tradeEvent.type = eventName;
+        tradeEvent.hyperdriveAddress = address;
         tradeEvent.transactionHash = transactionHash;
         tradeEvent.trader = provider!;
-        tradeEvent.assetId = "0";
+        tradeEvent.assetId = assetIdBigIntToHex(0n);
         tradeEvent.blockNumber = blockNumber;
+        tradeEvent.blockTime = blockTime;
         tradeEvent.maturityTime = "0";
-        tradeEvent.amount = formatUnits(amount, 18);
-        tradeEvent.vaultSharePrice = formatUnits(vaultSharePrice, 18);
+        tradeEvent.amount = amount.toString();
+        tradeEvent.vaultSharePrice = vaultSharePrice.toString();
         tradeEvent.asBase = asBase;
         tradeEvent.bondAmount = "0";
-        tradeEvent.balanceAtBlock = formatUnits(balanceAtBlock, 18);
+        tradeEvent.balanceAtBlock = balanceAtBlock.toString();
         tradeEvent.baseProceeds = "0";
 
         // Save pool info into the database separately, using BigInt
         const poolInfoAtBlock = new PoolInfoAtBlock();
         poolInfoAtBlock.blockNumber = blockNumber;
-        poolInfoAtBlock.hyperdriveAddress = hyperdriveAddress;
+        poolInfoAtBlock.hyperdriveAddress = address;
         poolInfoAtBlock.shareReserves = poolInfoRaw.shareReserves.toString();
         poolInfoAtBlock.shareAdjustment =
             poolInfoRaw.shareAdjustment.toString();

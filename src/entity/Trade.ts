@@ -5,7 +5,10 @@ export class Trade {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ type: "character varying" })
+    @Column()
+    type: string;
+
+    @Column()
     hyperdriveAddress: string;
 
     @Column({ type: "varchar", length: 66, unique: true }) // Unique index
@@ -19,6 +22,9 @@ export class Trade {
 
     @Column()
     blockNumber!: number;
+
+    @Column()
+    blockTime!: number;
 
     @Column()
     maturityTime!: string;

@@ -1,7 +1,7 @@
 import { HyperdriveConfig } from "@delvtech/hyperdrive-appconfig/dist/index.cjs";
 import "dotenv/config";
 import { PublicClient } from "viem";
-import { closeShortAbiEvent } from "../abi/events";
+import { closeLongAbiEvent } from "../abi/events";
 import { hyperdriveReadAbi } from "../abi/hyperdriveRead";
 import { AppDataSource } from "../dataSource";
 import { PoolInfoAtBlock } from "../entity/PoolInfoAtBlock";
@@ -10,7 +10,7 @@ import { assetIdBigIntToHex } from "../helpers/assets";
 import { getBlockTimestamp } from "../helpers/block";
 
 /**
- * Fetches and processes "CloseShort" events from the Hyperdrive smart contract
+ * Fetches and processes "CloseLong" events from the Hyperdrive smart contract
  * starting from the deployment block to the latest block. Retrieves balance
  * and pool info at each event's block, and stores the data in the PostgreSQL
  * database.
@@ -19,8 +19,7 @@ import { getBlockTimestamp } from "../helpers/block";
  *                            events from.
  * @param client - The PublicClient instance to interact with the blockchain.
  */
-
-export async function saveCloseShortEvents(
+export async function saveCloseLongEvents(
     hyperdrive: HyperdriveConfig,
     client: PublicClient,
 ) {
@@ -28,13 +27,13 @@ export async function saveCloseShortEvents(
 
     const logs = await client.getLogs({
         address,
-        event: closeShortAbiEvent,
+        event: closeLongAbiEvent,
         fromBlock: BigInt(initializationBlock),
         toBlock: "latest",
     });
 
     if (!logs) {
-        console.log("No CloseShort events found");
+        console.log("No CloseLong events found");
         return;
     }
 
@@ -100,7 +99,7 @@ export async function saveCloseShortEvents(
         const transactionHash = log.transactionHash;
 
         console.log(
-            `Processing CloseShort event at block ${blockNumber} for trader ${trader}`,
+            `Processing CloseLong event at block ${blockNumber} for trader ${trader}`,
         );
 
         const items = [
@@ -109,7 +108,6 @@ export async function saveCloseShortEvents(
             { name: "maturityTime", value: maturityTime },
             { name: "amount", value: amount },
             { name: "vaultSharePrice", value: vaultSharePrice },
-            { name: "baseProceeds", value: "0" },
             { name: "bondAmount", value: bondAmount },
             { name: "balanceAtBlock", value: balanceAtBlock },
             { name: "asBase", value: asBase },
@@ -128,7 +126,9 @@ export async function saveCloseShortEvents(
             items.forEach((item) => console.log(`${item.name}: ${item.value}`));
             return;
         }
+
         const tradeEvent = new Trade();
+
         tradeEvent.type = eventName;
         tradeEvent.hyperdriveAddress = address;
         tradeEvent.transactionHash = transactionHash;
@@ -192,5 +192,5 @@ export async function saveCloseShortEvents(
         .orIgnore()
         .execute();
 
-    console.log("Done saving CloseShort events.");
+    console.log("Done saving CloseLong events.");
 }

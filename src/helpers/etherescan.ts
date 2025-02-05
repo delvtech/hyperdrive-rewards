@@ -6,9 +6,7 @@ export async function getDeploymentBlock(
     contractAddress: string,
 ): Promise<bigint | null> {
     try {
-        console.log("contractAddress", contractAddress);
         const url = `https://api.etherscan.io/api?module=contract&action=getcontractcreation&contractaddresses=${contractAddress}&apikey=${ETHERSCAN_API_KEY}`;
-        console.log("url", url);
 
         const response = await fetch(url);
         const data = await response.json();

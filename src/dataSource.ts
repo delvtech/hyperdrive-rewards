@@ -1,9 +1,10 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
+import { Balance } from "./entity/Balance";
 import { PoolConfig } from "./entity/PoolConfig";
 import { PoolInfo } from "./entity/PoolInfo";
 import { PoolInfoAtBlock } from "./entity/PoolInfoAtBlock";
-import { Trade } from "./entity/TradeEvent";
+import { Trade } from "./entity/Trade";
 import { Wallet } from "./entity/Wallet";
 
 export const AppDataSource = new DataSource({
@@ -18,7 +19,7 @@ export const AppDataSource = new DataSource({
     },
     synchronize: true, // Creates table if not exists
     logging: false,
-    entities: [Wallet, PoolInfo, PoolConfig, Trade, PoolInfoAtBlock],
+    entities: [Balance, PoolConfig, PoolInfo, PoolInfoAtBlock, Trade, Wallet],
     migrations: [],
     subscribers: [],
 });
