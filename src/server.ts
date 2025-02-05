@@ -12,7 +12,6 @@ import { infoRouter } from "./info";
 import { poolRouter } from "./pool";
 import { rewardsRouter } from "./rewards";
 import swaggerSpec from "./swagger";
-import { walletRouter } from "./wallet";
 
 dotenv.config();
 
@@ -37,7 +36,6 @@ app.get("/swagger.json", (req: Request, res: Response) => {
 });
 
 // Add routers.
-app.use("/get/wallet", walletRouter);
 app.use("/get/rewards", rewardsRouter);
 app.use("/get/pool", poolRouter);
 app.use("/get/info", infoRouter);
