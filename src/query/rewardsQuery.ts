@@ -345,9 +345,6 @@ async function fetchRewardsEpoch(
 export async function fetchRewardsForUserNew(
     userAddress: Address,
 ): Promise<Reward[]> {
-    // TODO: get startBlock and endBlock for the range?  We need to get the range to add balances at those times.
-    //       startBlock should be the time before last rewards were claimed. (previous epoch's end).
-    //       endBlock is last time rewards were claimed (crrent epoch's end)
     // NOTE: If try to use initializationBlock for startBlock and latest for endBlock,
     //       and just add to the total sum, then earlier users will get more rewards than they should.
     //       for example: We claim 100 tokens at block 10 to the merkle contract and give everyone their total percentage.
@@ -358,8 +355,6 @@ export async function fetchRewardsForUserNew(
     //                    if we don't separate the epochs, so user1 eats some of user2's lunch.  So really we need to look
     //                    at each epoch separately.
     // TODO: add a table for claimedRewards for each pool.  Should have token, poolAddress, amount, blockNumber, type (token or points)
-
-    // TODO: get reward amount for epoch.
     // TODO: get totalLP portion for epoch. This can be obtained by summing the time weighted average of (shareReserves - shortsOutstanding) / share_reserves at each trade event during the epoch.
     // TODO: get totalShort portion for epoch.  This can be obtained by summing the time weighted average of the shortsOutstanding / shareReserves at each trade event.  Lp portion is the remaining percent for that time period.
     // NOTE: totalLP portion + totalShort portion == 100%
