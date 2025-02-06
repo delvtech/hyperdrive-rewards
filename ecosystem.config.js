@@ -16,7 +16,10 @@ module.exports = {
     },
     {
       name: "rewards-api",
-      script: "dist/server.js",
+      // script: "dist/server.js",
+      script: "yarn",
+      args: "dev",
+      cwd: "/home/ubuntu/hyperdrive-rewards",
       watch: ["dist"], // Only watch the dist directory
       env: {
         NODE_ENV: "production",
