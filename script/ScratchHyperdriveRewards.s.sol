@@ -33,6 +33,9 @@ contract ScratchHyperdriveRewards is Script {
         proof[3] = bytes32(0x1424736d53ffdf9546d0d41f7468f56757c3a00f0a7ce1318188ab464f10d578);
 
         uint256 rewardsBalance = IERC20(token).balanceOf(contractAddress);
+        bytes32 root = rewardsContract.root();
+        console.log('root');
+        console.logBytes32(root);
         console.log('rewardsBalance', rewardsBalance);
         // uint256 amount = rewardsContract.claim(user, token, claimable, proof);
 
