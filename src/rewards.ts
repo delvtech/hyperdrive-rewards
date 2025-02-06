@@ -60,7 +60,12 @@ rewardsRouter.get(
         const { address } = req.params;
         const rewards = await fetchRewardsForUserNew(address);
 
-        res.json(rewards);
+        const rewardsResponse: RewardsResponse = {
+            userAddress: address,
+            rewards,
+        };
+
+        res.json(rewardsResponse);
     },
 );
 

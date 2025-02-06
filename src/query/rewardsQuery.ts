@@ -528,7 +528,6 @@ export async function fetchRewardsForUserNew(
         },
     );
     const userSums = await Promise.all(promises);
-    console.log("userSums", userSums);
 
     const uniqueHyperdriveAddresses: Address[] = (
         await dataSource
@@ -609,6 +608,5 @@ async function getNestedTradesByTrader(
 `,
         [traderAddress],
     );
-    console.log("result", JSON.stringify(result, null, 2));
     return result;
 }
