@@ -342,7 +342,9 @@ async function fetchRewardsEpoch(
     return { startBlock, endBlock };
 }
 
-export async function fetchRewardsForUserNew(userAddress: Address): Reward[] {
+export async function fetchRewardsForUserNew(
+    userAddress: Address,
+): Promise<Reward[]> {
     // TODO: get startBlock and endBlock for the range?  We need to get the range to add balances at those times.
     //       startBlock should be the time before last rewards were claimed. (previous epoch's end).
     //       endBlock is last time rewards were claimed (crrent epoch's end)
@@ -555,9 +557,10 @@ export async function fetchRewardsForUserNew(userAddress: Address): Reward[] {
         ({ LP, Short, hyperdriveAddress }) => {
             return {
                 chainId: mainnet.id,
-                claimContract: process.env.REWARDS_CONTRACT as Address,
+                claimContractAddress: process.env.REWARDS_CONTRACT as Address,
                 claimableAmount: (BigInt(LP) + BigInt(Short)).toString(),
-                rewardToken: process.env.REWARD_TOKEN as Address,
+                pendingAmount: "0",
+                rewardTokenAddress: process.env.REWARD_TOKEN as Address,
                 merkleProof: null,
                 merkleProofLastUpdated: 0,
             };
