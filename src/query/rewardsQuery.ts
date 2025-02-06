@@ -392,129 +392,158 @@ export async function fetchRewardsForUserNew(
             );
             const epochDuration = endBlock - startBlock;
 
-            for (const { assetId, trades } of tradesForAsset.filter(
-                ({ assetId }) => isRewardsAssetType(getAssetType(assetId)),
-            )) {
-                const assetType = getAssetType(assetId);
-                const maturityTime = getMaturityTime(assetId);
+            const rewardsTrades = tradesForAsset.filter(({ assetId }) =>
+                isRewardsAssetType(getAssetType(assetId)),
+            );
+            const tradePromises = rewardsTrades.map(
+                async ({ assetId, trades }) => {
+                    const assetType = getAssetType(assetId);
+                    const maturityTime = getMaturityTime(assetId);
 
-                const startBalance = await getHyperdriveBalance(
-                    client,
-                    hyperdriveAddress,
-                    startBlock,
-                    assetId,
-                    userAddress,
-                );
-                const endBalance = await getHyperdriveBalance(
-                    client,
-                    hyperdriveAddress,
-                    endBlock,
-                    assetId,
-                    userAddress,
-                );
-                const startBlockTime = await getBlockTimestamp(
-                    client,
-                    startBlock,
-                );
-                const endBlockTime = await getBlockTimestamp(client, endBlock);
-                const epochTrades = trades
-                    .filter(({ blockNumber }) => {
-                        return (
-                            blockNumber >= startBlock && blockNumber <= endBlock
-                        );
-                    })
-                    .map(({ balanceAtBlock, blockNumber, blockTime }) => {
-                        return { balanceAtBlock, blockNumber, blockTime };
-                    });
+                    const startBalancePromise = getHyperdriveBalance(
+                        client,
+                        hyperdriveAddress,
+                        startBlock,
+                        assetId,
+                        userAddress,
+                    );
+                    const endBalancePromise = getHyperdriveBalance(
+                        client,
+                        hyperdriveAddress,
+                        endBlock,
+                        assetId,
+                        userAddress,
+                    );
+                    const startBlockTimePromise = getBlockTimestamp(
+                        client,
+                        startBlock,
+                    );
+                    const endBlockTimePromise = getBlockTimestamp(
+                        client,
+                        endBlock,
+                    );
 
-                // LP is the easy case because there is no maturity date.
-                if (assetType === "LP") {
-                    // If there are no trades in the epoch, then we can just return the balance at the startBlock * epochDuration
-                    if (epochTrades.length == 0) {
-                        if (startBalance !== endBalance) {
-                            // The balances should match if there are no events in the epoch.
-                            throw new Error(
-                                "fetchRewardsForUser: LP balances don't match for epoch",
+                    const [
+                        startBalance,
+                        endBalance,
+                        startBlockTime,
+                        endBlockTime,
+                    ] = await Promise.all([
+                        startBalancePromise,
+                        endBalancePromise,
+                        startBlockTimePromise,
+                        endBlockTimePromise,
+                    ]);
+
+                    const epochTrades = trades
+                        .filter(({ blockNumber }) => {
+                            return (
+                                blockNumber >= startBlock &&
+                                blockNumber <= endBlock
                             );
-                        }
-                        userSums.LP += startBalance * epochDuration;
-                    } else {
-                        const startBlockTrade = {
-                            blockNumber: Number(startBlock),
-                            balanceAtBlock: startBalance.toString(),
-                            blockTime: Number(startBlockTime),
-                        };
-                        const endBlockTrade = {
-                            blockNumber: Number(endBlock),
-                            balanceAtBlock: endBalance.toString(),
-                            blockTime: Number(endBlockTime),
-                        };
-                        const paddedEpochTrades = [
-                            startBlockTrade,
-                            ...epochTrades,
-                            endBlockTrade,
-                        ];
-                        for (let i = 0; i < paddedEpochTrades.length - 1; i++) {
-                            const start = paddedEpochTrades[i];
-                            const end = paddedEpochTrades[i + 1];
-                            const balance = BigInt(start.balanceAtBlock);
-                            const duration = BigInt(
-                                end.blockNumber - start.blockNumber,
-                            );
-                            userSums.LP += balance * duration;
-                        }
-                    }
-                }
+                        })
+                        .map(({ balanceAtBlock, blockNumber, blockTime }) => {
+                            return { balanceAtBlock, blockNumber, blockTime };
+                        });
 
-                // LP is the easy case because there is no maturity date.
-                if (assetType === "Short") {
-                    // If there are no trades in the epoch, then we can just return the balance at the startBlock * epochDuration
-                    if (epochTrades.length == 0) {
-                        if (startBalance !== endBalance) {
-                            // The balances should match if there are no events in the epoch.
-                            throw new Error(
-                                "fetchRewardsForUser: LP balances don't match for epoch",
-                            );
-                        }
-                        userSums.Short += startBalance * epochDuration;
-                    } else {
-                        const startBlockTrade = {
-                            blockNumber: Number(startBlock),
-                            blockTime: Number(startBlockTime),
-                            balanceAtBlock: startBalance.toString(),
-                        };
-                        const endBlockTrade = {
-                            blockNumber: Number(endBlock),
-                            blockTime: Number(endBlockTime),
-                            balanceAtBlock: endBalance.toString(),
-                        };
-
-                        const paddedEpochTrades = [
-                            startBlockTrade,
-                            ...epochTrades,
-                            endBlockTrade,
-                        ];
-                        for (let i = 0; i < paddedEpochTrades.length - 1; i++) {
-                            const start = paddedEpochTrades[i];
-                            const end = paddedEpochTrades[i + 1];
-                            // Don't count mature shorts for rewards, LPs get those.
-                            if (start.blockTime >= maturityTime) {
-                                console.log(
-                                    "token mature",
-                                    maturityTime,
-                                    assetId,
+                    // LP is the easy case because there is no maturity date.
+                    if (assetType === "LP") {
+                        // If there are no trades in the epoch, then we can just return the balance at the startBlock * epochDuration
+                        if (epochTrades.length == 0) {
+                            if (startBalance !== endBalance) {
+                                // The balances should match if there are no events in the epoch.
+                                throw new Error(
+                                    "fetchRewardsForUser: LP balances don't match for epoch",
                                 );
-                                break;
                             }
-                            const balance = BigInt(start.balanceAtBlock);
-                            const duration = BigInt(
-                                end.blockNumber - start.blockNumber,
-                            );
-                            userSums.Short += balance * duration;
+                            userSums.LP += startBalance * epochDuration;
+                        } else {
+                            const startBlockTrade = {
+                                blockNumber: Number(startBlock),
+                                balanceAtBlock: startBalance.toString(),
+                                blockTime: Number(startBlockTime),
+                            };
+                            const endBlockTrade = {
+                                blockNumber: Number(endBlock),
+                                balanceAtBlock: endBalance.toString(),
+                                blockTime: Number(endBlockTime),
+                            };
+                            const paddedEpochTrades = [
+                                startBlockTrade,
+                                ...epochTrades,
+                                endBlockTrade,
+                            ];
+                            for (
+                                let i = 0;
+                                i < paddedEpochTrades.length - 1;
+                                i++
+                            ) {
+                                const start = paddedEpochTrades[i];
+                                const end = paddedEpochTrades[i + 1];
+                                const balance = BigInt(start.balanceAtBlock);
+                                const duration = BigInt(
+                                    end.blockNumber - start.blockNumber,
+                                );
+                                userSums.LP += balance * duration;
+                            }
                         }
                     }
-                }
-            }
+
+                    // LP is the easy case because there is no maturity date.
+                    if (assetType === "Short") {
+                        // If there are no trades in the epoch, then we can just return the balance at the startBlock * epochDuration
+                        if (epochTrades.length == 0) {
+                            if (startBalance !== endBalance) {
+                                // The balances should match if there are no events in the epoch.
+                                throw new Error(
+                                    "fetchRewardsForUser: LP balances don't match for epoch",
+                                );
+                            }
+                            userSums.Short += startBalance * epochDuration;
+                        } else {
+                            const startBlockTrade = {
+                                blockNumber: Number(startBlock),
+                                blockTime: Number(startBlockTime),
+                                balanceAtBlock: startBalance.toString(),
+                            };
+                            const endBlockTrade = {
+                                blockNumber: Number(endBlock),
+                                blockTime: Number(endBlockTime),
+                                balanceAtBlock: endBalance.toString(),
+                            };
+
+                            const paddedEpochTrades = [
+                                startBlockTrade,
+                                ...epochTrades,
+                                endBlockTrade,
+                            ];
+                            for (
+                                let i = 0;
+                                i < paddedEpochTrades.length - 1;
+                                i++
+                            ) {
+                                const start = paddedEpochTrades[i];
+                                const end = paddedEpochTrades[i + 1];
+                                // Don't count mature shorts for rewards, LPs get those.
+                                if (start.blockTime >= maturityTime) {
+                                    console.log(
+                                        "token mature",
+                                        maturityTime,
+                                        assetId,
+                                    );
+                                    break;
+                                }
+                                const balance = BigInt(start.balanceAtBlock);
+                                const duration = BigInt(
+                                    end.blockNumber - start.blockNumber,
+                                );
+                                userSums.Short += balance * duration;
+                            }
+                        }
+                    }
+                },
+            );
+            await Promise.all(tradePromises);
             return {
                 LP: userSums.LP.toString(),
                 Short: userSums.LP.toString(),
