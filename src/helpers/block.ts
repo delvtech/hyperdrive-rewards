@@ -1,4 +1,5 @@
 import { PublicClient } from "viem";
+
 export async function getBlockTimestamp(
     client: PublicClient,
     blockNumber: bigint | number,

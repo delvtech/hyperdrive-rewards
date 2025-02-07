@@ -1,20 +1,20 @@
-import { HyperdriveConfig } from "@delvtech/hyperdrive-appconfig/dist/index.cjs";
 import "dotenv/config";
 import { ZeroAddress } from "ethers";
-import { formatUnits, PublicClient, toHex } from "viem";
-import { transferSingleAbiEvent } from "../abi/events";
-import { hyperdriveReadAbi } from "../abi/hyperdriveRead";
-import { AppDataSource } from "../dataSource";
-import { PoolInfoAtBlock } from "../entity/PoolInfoAtBlock";
-import { Trade } from "../entity/Trade";
+import { transferSingleAbiEvent } from "src/abi/events";
+import { hyperdriveReadAbi } from "src/abi/hyperdriveRead";
+import { HyperdriveConfig } from "src/appConfig/types";
+import { PoolInfoAtBlock } from "src/entity/PoolInfoAtBlock";
+import { Trade } from "src/entity/Trade";
 import {
     assetIdBigIntToHex,
     getAssetType,
     getMaturityTime,
     isRewardsAssetType,
-} from "../helpers/assets";
-import { getHyperdriveBalance } from "../helpers/balance";
-import { getBlockTimestamp } from "../helpers/block";
+} from "src/helpers/assets";
+import { getHyperdriveBalance } from "src/helpers/balance";
+import { getBlockTimestamp } from "src/helpers/block";
+import { AppDataSource } from "src/server/dataSource";
+import { formatUnits, PublicClient, toHex } from "viem";
 
 /**
  * Fetches and processes "TransferSingle" events from the Hyperdrive smart contract
@@ -121,10 +121,6 @@ export async function saveTransferSingleEvents(
         const blockNumber = Number(log.blockNumber);
         const transactionHash = log.transactionHash;
 
-        console.log(
-            `Processing TransferSingle event at block ${blockNumber} between ${to} and ${from}`,
-        );
-
         const assetType = getAssetType(toHex(id!));
         if (!isRewardsAssetType) {
             return;
@@ -132,7 +128,11 @@ export async function saveTransferSingleEvents(
 
         const maturityTime = getMaturityTime(toHex(id!, { size: 32 }));
 
-        if (to !== ZeroAddress && isRewardsAssetType(assetType)) {
+        if (
+            to !== ZeroAddress &&
+            from !== ZeroAddress &&
+            isRewardsAssetType(assetType)
+        ) {
             const toTradeEvent = new Trade();
             toTradeEvent.type = eventName;
             toTradeEvent.hyperdriveAddress = address;
@@ -152,14 +152,7 @@ export async function saveTransferSingleEvents(
             toTradeEvent.balanceAtBlock = toBalanceAtBlock.toString();
             toTradeEvent.baseProceeds = "0";
             tradeEvents.push(toTradeEvent);
-        }
 
-        if (from !== ZeroAddress && to !== ZeroAddress) {
-            console.log("to", to);
-            console.log("from", from);
-        }
-
-        if (from !== ZeroAddress) {
             const fromTradeEvent = new Trade();
             fromTradeEvent.type = eventName;
             fromTradeEvent.hyperdriveAddress = address;
@@ -228,5 +221,5 @@ export async function saveTransferSingleEvents(
         .orIgnore()
         .execute();
 
-    console.log("Done saving TransferSingle events.");
+    console.log(`Done saving TransferSingle events for ${hyperdrive.name}`);
 }

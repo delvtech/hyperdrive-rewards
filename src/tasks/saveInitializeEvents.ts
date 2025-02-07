@@ -1,16 +1,17 @@
 import "dotenv/config";
-import { addLiquidityAbiEvent } from "src/abi/events";
+import { initializeAbiEvent } from "src/abi/events";
 import { hyperdriveReadAbi } from "src/abi/hyperdriveRead";
 import { HyperdriveConfig } from "src/appConfig/types";
 import { PoolInfoAtBlock } from "src/entity/PoolInfoAtBlock";
 import { Trade } from "src/entity/Trade";
-import { assetIdBigIntToHex } from "src/helpers/assets";
+import { assetIdBigIntToHex, LP_ASSET_ID } from "src/helpers/assets";
+import { getHyperdriveBalance } from "src/helpers/balance";
 import { getBlockTimestamp } from "src/helpers/block";
 import { AppDataSource } from "src/server/dataSource";
 import { PublicClient } from "viem";
 
 /**
- * Fetches and processes "AddLiquidity" events from the Hyperdrive smart
+ * Fetches and processes "Initialize" events from the Hyperdrive smart
  * contract starting from the deployment block to the latest block.
  * Retrieves balance and pool info at each event's block, and stores the
  * data in the PostgreSQL database.
@@ -18,7 +19,7 @@ import { PublicClient } from "viem";
  * @param hyperdrive - Hyperdrive contract to fetch events from.
  * @param client - The PublicClient instance to interact with the blockchain.
  */
-export async function saveAddLiquidityEvents(
+export async function saveInitializeEvents(
     hyperdrive: HyperdriveConfig,
     client: PublicClient,
 ) {
@@ -26,9 +27,9 @@ export async function saveAddLiquidityEvents(
 
     const logs = await client.getLogs({
         address,
-        event: addLiquidityAbiEvent,
-        fromBlock: BigInt(initializationBlock),
-        toBlock: "latest",
+        event: initializeAbiEvent,
+        fromBlock: BigInt(initializationBlock - 1n),
+        toBlock: BigInt(initializationBlock + 1n),
     });
 
     const balancePromises = Promise.all(
@@ -36,13 +37,13 @@ export async function saveAddLiquidityEvents(
             const args = log.args;
             const { provider } = args;
             // Get balanceOf at the event's block
-            return client.readContract({
-                address: address,
-                abi: hyperdriveReadAbi,
-                functionName: "balanceOf",
-                blockNumber: log.blockNumber,
-                args: [0n!, provider!],
-            });
+            return getHyperdriveBalance(
+                client,
+                address,
+                log.blockNumber,
+                LP_ASSET_ID,
+                provider!,
+            );
         }),
     );
 
@@ -169,5 +170,5 @@ export async function saveAddLiquidityEvents(
         .orIgnore()
         .execute();
 
-    console.log(`Done saving AddLiquidity events for ${hyperdrive.name}`);
+    console.log(`Done saving Initialize events for ${hyperdrive.name}`);
 }

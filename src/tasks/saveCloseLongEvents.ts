@@ -1,13 +1,13 @@
-import { HyperdriveConfig } from "@delvtech/hyperdrive-appconfig/dist/index.cjs";
 import "dotenv/config";
+import { closeLongAbiEvent } from "src/abi/events";
+import { hyperdriveReadAbi } from "src/abi/hyperdriveRead";
+import { HyperdriveConfig } from "src/appConfig/types";
+import { PoolInfoAtBlock } from "src/entity/PoolInfoAtBlock";
+import { Trade } from "src/entity/Trade";
+import { assetIdBigIntToHex } from "src/helpers/assets";
+import { getBlockTimestamp } from "src/helpers/block";
+import { AppDataSource } from "src/server/dataSource";
 import { PublicClient } from "viem";
-import { closeLongAbiEvent } from "../abi/events";
-import { hyperdriveReadAbi } from "../abi/hyperdriveRead";
-import { AppDataSource } from "../dataSource";
-import { PoolInfoAtBlock } from "../entity/PoolInfoAtBlock";
-import { Trade } from "../entity/Trade";
-import { assetIdBigIntToHex } from "../helpers/assets";
-import { getBlockTimestamp } from "../helpers/block";
 
 /**
  * Fetches and processes "CloseLong" events from the Hyperdrive smart contract
@@ -97,10 +97,6 @@ export async function saveCloseLongEvents(
         const blockNumber = Number(log.blockNumber);
         const blockTime = Number(blockTimestamps[index]);
         const transactionHash = log.transactionHash;
-
-        console.log(
-            `Processing CloseLong event at block ${blockNumber} for trader ${trader}`,
-        );
 
         const items = [
             { name: "trader", value: trader },
@@ -192,5 +188,5 @@ export async function saveCloseLongEvents(
         .orIgnore()
         .execute();
 
-    console.log("Done saving CloseLong events.");
+    console.log(`Done saving CloseLong events for ${hyperdrive.name}`);
 }

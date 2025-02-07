@@ -1,5 +1,5 @@
+import { hyperdriveReadAbi } from "src/abi/hyperdriveRead";
 import { Address, PublicClient } from "viem";
-import { hyperdriveReadAbi } from "../abi/hyperdriveRead";
 
 export async function getHyperdriveBalance(
     client: PublicClient,

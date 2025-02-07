@@ -1,5 +1,7 @@
 {
-  "watch": ["src"],
+  "watch": [
+    "src"
+  ],
   "ignore": [
     "script/*",
     "logs/*",
@@ -8,5 +10,7 @@
     "out/*",
     "build/*",
     "broadcast/*"
-  ]
+  ],
+  "ext": "ts",
+  "exec": "ts-node --require tsconfig-paths/register"
 }

@@ -1,5 +1,7 @@
 import { isHex, toHex } from "viem";
 
+export const LP_ASSET_ID = "0x0000000000000000000000000000000000000000";
+
 export function getAssetType(assetId: string) {
     if (!isHex(assetId)) {
         throw new Error("getAssetType: Invalid assetId");
@@ -38,5 +40,7 @@ export function getMaturityTime(assetId: string): bigint {
 }
 
 export function assetIdBigIntToHex(assetId: bigint): string {
-    return toHex(assetId, { size: 32 });
+    return assetId
+        ? toHex(assetId)
+        : "0x0000000000000000000000000000000000000000000000000000000000000000";
 }
