@@ -19,18 +19,6 @@ export class PoolInfoAtBlock {
     @Column({ type: "character varying" })
     hyperdriveAddress: string;
 
-    // @Column({ type: "timestamp without time zone" })
-    // timestamp: Date;
-
-    // @Column({ type: "numeric" })
-    // hyperdrive_base_balance: number;
-
-    // @Column({ type: "numeric" })
-    // hyperdrive_eth_balance: number;
-
-    // @Column({ type: "numeric" })
-    // vault_shares: number;
-
     // PoolInfo data, stored as BigInt
     @Column()
     shareReserves: string;
@@ -75,5 +63,41 @@ export class PoolInfoAtBlock {
     lpSharePrice: string;
 
     @Column()
+    longExposure: string;
+}
+
+export interface PoolInfoAtBlockInterface {
+    blockNumber: number;
+
+    hyperdriveAddress: string;
+
+    shareReserves: string;
+
+    shareAdjustment: string;
+
+    zombieBaseProceeds: string;
+
+    zombieShareReserves: string;
+
+    bondReserves: string;
+
+    lpTotalSupply: string;
+
+    vaultSharePrice: string;
+
+    longsOutstanding: string;
+
+    longAverageMaturityTime: string;
+
+    shortsOutstanding: string;
+
+    shortAverageMaturityTime: string;
+
+    withdrawalSharesReadyToWithdraw: string;
+
+    withdrawalSharesProceeds: string;
+
+    lpSharePrice: string;
+
     longExposure: string;
 }

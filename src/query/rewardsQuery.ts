@@ -12,9 +12,13 @@ import {
     parseEther,
 } from "viem";
 import { mainnet } from "viem/chains";
+import { hyperdriveReadAbi } from "../abi/hyperdriveRead";
 import { ONE } from "../constants";
 import { AppDataSource as dataSource } from "../dataSource";
-import { PoolInfoAtBlock } from "../entity/PoolInfoAtBlock";
+import {
+    PoolInfoAtBlock,
+    PoolInfoAtBlockInterface,
+} from "../entity/PoolInfoAtBlock";
 import { Trade } from "../entity/Trade";
 import {
     getAssetType,
@@ -392,129 +396,158 @@ export async function fetchRewardsForUserNew(
             );
             const epochDuration = endBlock - startBlock;
 
-            for (const { assetId, trades } of tradesForAsset.filter(
-                ({ assetId }) => isRewardsAssetType(getAssetType(assetId)),
-            )) {
-                const assetType = getAssetType(assetId);
-                const maturityTime = getMaturityTime(assetId);
+            const rewardsTrades = tradesForAsset.filter(({ assetId }) =>
+                isRewardsAssetType(getAssetType(assetId)),
+            );
+            const tradePromises = rewardsTrades.map(
+                async ({ assetId, trades }) => {
+                    const assetType = getAssetType(assetId);
+                    const maturityTime = getMaturityTime(assetId);
 
-                const startBalance = await getHyperdriveBalance(
-                    client,
-                    hyperdriveAddress,
-                    startBlock,
-                    assetId,
-                    userAddress,
-                );
-                const endBalance = await getHyperdriveBalance(
-                    client,
-                    hyperdriveAddress,
-                    endBlock,
-                    assetId,
-                    userAddress,
-                );
-                const startBlockTime = await getBlockTimestamp(
-                    client,
-                    startBlock,
-                );
-                const endBlockTime = await getBlockTimestamp(client, endBlock);
-                const epochTrades = trades
-                    .filter(({ blockNumber }) => {
-                        return (
-                            blockNumber >= startBlock && blockNumber <= endBlock
-                        );
-                    })
-                    .map(({ balanceAtBlock, blockNumber, blockTime }) => {
-                        return { balanceAtBlock, blockNumber, blockTime };
-                    });
+                    const startBalancePromise = getHyperdriveBalance(
+                        client,
+                        hyperdriveAddress,
+                        startBlock,
+                        assetId,
+                        userAddress,
+                    );
+                    const endBalancePromise = getHyperdriveBalance(
+                        client,
+                        hyperdriveAddress,
+                        endBlock,
+                        assetId,
+                        userAddress,
+                    );
+                    const startBlockTimePromise = getBlockTimestamp(
+                        client,
+                        startBlock,
+                    );
+                    const endBlockTimePromise = getBlockTimestamp(
+                        client,
+                        endBlock,
+                    );
 
-                // LP is the easy case because there is no maturity date.
-                if (assetType === "LP") {
-                    // If there are no trades in the epoch, then we can just return the balance at the startBlock * epochDuration
-                    if (epochTrades.length == 0) {
-                        if (startBalance !== endBalance) {
-                            // The balances should match if there are no events in the epoch.
-                            throw new Error(
-                                "fetchRewardsForUser: LP balances don't match for epoch",
+                    const [
+                        startBalance,
+                        endBalance,
+                        startBlockTime,
+                        endBlockTime,
+                    ] = await Promise.all([
+                        startBalancePromise,
+                        endBalancePromise,
+                        startBlockTimePromise,
+                        endBlockTimePromise,
+                    ]);
+
+                    const epochTrades = trades
+                        .filter(({ blockNumber }) => {
+                            return (
+                                blockNumber >= startBlock &&
+                                blockNumber <= endBlock
                             );
-                        }
-                        userSums.LP += startBalance * epochDuration;
-                    } else {
-                        const startBlockTrade = {
-                            blockNumber: Number(startBlock),
-                            balanceAtBlock: startBalance.toString(),
-                            blockTime: Number(startBlockTime),
-                        };
-                        const endBlockTrade = {
-                            blockNumber: Number(endBlock),
-                            balanceAtBlock: endBalance.toString(),
-                            blockTime: Number(endBlockTime),
-                        };
-                        const paddedEpochTrades = [
-                            startBlockTrade,
-                            ...epochTrades,
-                            endBlockTrade,
-                        ];
-                        for (let i = 0; i < paddedEpochTrades.length - 1; i++) {
-                            const start = paddedEpochTrades[i];
-                            const end = paddedEpochTrades[i + 1];
-                            const balance = BigInt(start.balanceAtBlock);
-                            const duration = BigInt(
-                                end.blockNumber - start.blockNumber,
-                            );
-                            userSums.LP += balance * duration;
-                        }
-                    }
-                }
+                        })
+                        .map(({ balanceAtBlock, blockNumber, blockTime }) => {
+                            return { balanceAtBlock, blockNumber, blockTime };
+                        });
 
-                // LP is the easy case because there is no maturity date.
-                if (assetType === "Short") {
-                    // If there are no trades in the epoch, then we can just return the balance at the startBlock * epochDuration
-                    if (epochTrades.length == 0) {
-                        if (startBalance !== endBalance) {
-                            // The balances should match if there are no events in the epoch.
-                            throw new Error(
-                                "fetchRewardsForUser: LP balances don't match for epoch",
-                            );
-                        }
-                        userSums.Short += startBalance * epochDuration;
-                    } else {
-                        const startBlockTrade = {
-                            blockNumber: Number(startBlock),
-                            blockTime: Number(startBlockTime),
-                            balanceAtBlock: startBalance.toString(),
-                        };
-                        const endBlockTrade = {
-                            blockNumber: Number(endBlock),
-                            blockTime: Number(endBlockTime),
-                            balanceAtBlock: endBalance.toString(),
-                        };
-
-                        const paddedEpochTrades = [
-                            startBlockTrade,
-                            ...epochTrades,
-                            endBlockTrade,
-                        ];
-                        for (let i = 0; i < paddedEpochTrades.length - 1; i++) {
-                            const start = paddedEpochTrades[i];
-                            const end = paddedEpochTrades[i + 1];
-                            // Don't count mature shorts for rewards, LPs get those.
-                            if (start.blockTime >= maturityTime) {
-                                console.log(
-                                    "token mature",
-                                    maturityTime,
-                                    assetId,
+                    // LP is the easy case because there is no maturity date.
+                    if (assetType === "LP") {
+                        // If there are no trades in the epoch, then we can just return the balance at the startBlock * epochDuration
+                        if (epochTrades.length == 0) {
+                            if (startBalance !== endBalance) {
+                                // The balances should match if there are no events in the epoch.
+                                throw new Error(
+                                    "fetchRewardsForUser: LP balances don't match for epoch",
                                 );
-                                break;
                             }
-                            const balance = BigInt(start.balanceAtBlock);
-                            const duration = BigInt(
-                                end.blockNumber - start.blockNumber,
-                            );
-                            userSums.Short += balance * duration;
+                            userSums.LP += startBalance * epochDuration;
+                        } else {
+                            const startBlockTrade = {
+                                blockNumber: Number(startBlock),
+                                balanceAtBlock: startBalance.toString(),
+                                blockTime: Number(startBlockTime),
+                            };
+                            const endBlockTrade = {
+                                blockNumber: Number(endBlock),
+                                balanceAtBlock: endBalance.toString(),
+                                blockTime: Number(endBlockTime),
+                            };
+                            const paddedEpochTrades = [
+                                startBlockTrade,
+                                ...epochTrades,
+                                endBlockTrade,
+                            ];
+                            for (
+                                let i = 0;
+                                i < paddedEpochTrades.length - 1;
+                                i++
+                            ) {
+                                const start = paddedEpochTrades[i];
+                                const end = paddedEpochTrades[i + 1];
+                                const balance = BigInt(start.balanceAtBlock);
+                                const duration = BigInt(
+                                    end.blockNumber - start.blockNumber,
+                                );
+                                userSums.LP += balance * duration;
+                            }
                         }
                     }
-                }
-            }
+
+                    // LP is the easy case because there is no maturity date.
+                    if (assetType === "Short") {
+                        // If there are no trades in the epoch, then we can just return the balance at the startBlock * epochDuration
+                        if (epochTrades.length == 0) {
+                            if (startBalance !== endBalance) {
+                                // The balances should match if there are no events in the epoch.
+                                throw new Error(
+                                    "fetchRewardsForUser: LP balances don't match for epoch",
+                                );
+                            }
+                            userSums.Short += startBalance * epochDuration;
+                        } else {
+                            const startBlockTrade = {
+                                blockNumber: Number(startBlock),
+                                blockTime: Number(startBlockTime),
+                                balanceAtBlock: startBalance.toString(),
+                            };
+                            const endBlockTrade = {
+                                blockNumber: Number(endBlock),
+                                blockTime: Number(endBlockTime),
+                                balanceAtBlock: endBalance.toString(),
+                            };
+
+                            const paddedEpochTrades = [
+                                startBlockTrade,
+                                ...epochTrades,
+                                endBlockTrade,
+                            ];
+                            for (
+                                let i = 0;
+                                i < paddedEpochTrades.length - 1;
+                                i++
+                            ) {
+                                const start = paddedEpochTrades[i];
+                                const end = paddedEpochTrades[i + 1];
+                                // Don't count mature shorts for rewards, LPs get those.
+                                if (start.blockTime >= maturityTime) {
+                                    console.log(
+                                        "token mature",
+                                        maturityTime,
+                                        assetId,
+                                    );
+                                    break;
+                                }
+                                const balance = BigInt(start.balanceAtBlock);
+                                const duration = BigInt(
+                                    end.blockNumber - start.blockNumber,
+                                );
+                                userSums.Short += balance * duration;
+                            }
+                        }
+                    }
+                },
+            );
+            await Promise.all(tradePromises);
             return {
                 LP: userSums.LP.toString(),
                 Short: userSums.LP.toString(),
@@ -524,37 +557,140 @@ export async function fetchRewardsForUserNew(
     );
     const userSums = await Promise.all(promises);
 
-    const uniqueHyperdriveAddresses: Address[] = (
-        await dataSource
-            .getRepository(Trade)
-            .createQueryBuilder("trades")
-            .select("DISTINCT trades.hyperdriveAddress", "hyperdriveAddress")
-            .getRawMany()
-    ).map(({ hyperdriveAddress }) => hyperdriveAddress);
+    // const uniqueHyperdriveAddresses: Address[] = (
+    //     await dataSource
+    //         .getRepository(Trade)
+    //         .createQueryBuilder("trades")
+    //         .select("DISTINCT trades.hyperdriveAddress", "hyperdriveAddress")
+    //         .getRawMany()
+    // ).map(({ hyperdriveAddress }) => hyperdriveAddress);
 
-    // const asdf = uniqueHyperdriveAddresses.map(async ({ hyperdrveAddress }) => {
-    //     const poolConfig = mainnetAppConfig.hyperdrives.find(
-    //         ({ address }) => address === hyperdriveAddress,
-    //     );
+    const poolInfosByHyperdriveAddress: {
+        hyperdriveAddress: Address;
+        poolInfos: PoolInfoAtBlockInterface[];
+    }[] = await dataSource.query(`
+        SELECT
+        "hyperdriveAddress",
+        json_agg(pool_info_at_block ORDER BY "blockNumber" ASC) AS "poolInfos"
+        FROM
+        pool_info_at_block
+        GROUP BY
+        "hyperdriveAddress";
+        `);
 
-    //     const { startBlock, endBlock } = await fetchRewardsEpoch(
-    //         poolConfig,
-    //         client,
-    //     );
-    // });
-    // const poolInfos: { poolInfo: Address }[] = await dataSource
-    //     .getRepository(PoolInfoAtBlock)
-    //     .createQueryBuilder("pool_info_at_block")
-    //     .getMany();
+    const poolSums: Record<Address, { LP: bigint; Short: bigint }> = {};
+    const poolSumsPromises = poolInfosByHyperdriveAddress.map(
+        async ({ hyperdriveAddress, poolInfos }) => {
+            const poolConfig = mainnetAppConfig.hyperdrives.find(
+                ({ address }) => address === hyperdriveAddress,
+            )!;
 
-    const rewards: Reward[] = userSums.map(
-        ({ LP, Short, hyperdriveAddress }) => {
+            const { startBlock, endBlock } = await fetchRewardsEpoch(
+                poolConfig,
+                client,
+            );
+
+            const startPoolInfo = await client.readContract({
+                address: hyperdriveAddress,
+                abi: hyperdriveReadAbi,
+                functionName: "getPoolInfo",
+                blockNumber: startBlock,
+            });
+
+            const endPoolInfo = await client.readContract({
+                address: hyperdriveAddress,
+                abi: hyperdriveReadAbi,
+                functionName: "getPoolInfo",
+                blockNumber: startBlock,
+            });
+
+            const poolInfosInEpoch = poolInfos.filter(
+                ({ blockNumber }) =>
+                    blockNumber > startBlock && blockNumber < endBlock,
+            );
+            const paddedPoolInfos = [
+                { ...startPoolInfo, blockNumber: startBlock },
+                ...poolInfosInEpoch,
+                { ...endPoolInfo, blockNumber: endBlock },
+            ];
+            const poolSum: {
+                hyperdriveAddress: Address;
+                LP: bigint;
+                Short: bigint;
+            } = {
+                hyperdriveAddress,
+                LP: 0n,
+                Short: 0n,
+            };
+            for (let i = 1; i < paddedPoolInfos.length; i++) {
+                const { shareReserves, shortsOutstanding } =
+                    paddedPoolInfos[i - 1];
+                const duration =
+                    BigInt(paddedPoolInfos[i].blockNumber) -
+                    BigInt(paddedPoolInfos[i - 1].blockNumber);
+                poolSum.LP +=
+                    (BigInt(shareReserves) - BigInt(shortsOutstanding)) *
+                    duration;
+                poolSum.Short += BigInt(shortsOutstanding) * duration;
+            }
+            poolSums[hyperdriveAddress] = poolSum;
+        },
+    );
+    await Promise.all(poolSumsPromises);
+
+    const rewardsByTokenAddress: Record<Address, bigint> = {};
+    userSums.forEach(({ LP, Short, hyperdriveAddress }) => {
+        // TODO: get rewardAmount from database.
+        const rewardAmount = FixedNumber.fromValue(parseEther("100"), 18);
+        const rewardTokenAddress = process.env.REWARDS_TOKEN as Address;
+
+        const poolSum = poolSums[hyperdriveAddress];
+        const poolLP = FixedNumber.fromValue(BigInt(poolSum.LP), 18);
+        const poolShort = FixedNumber.fromValue(BigInt(poolSum.Short), 18);
+        const totalPool = poolLP.add(poolShort);
+        const poolLpRewards = poolLP.div(totalPool).mul(rewardAmount);
+        // console.log("poolLpRewards", poolLpRewards.toString());
+        const poolShortRewards = poolShort.div(totalPool).mul(rewardAmount);
+        // console.log("poolShortRewards", poolShortRewards.toString());
+
+        const userLP = FixedNumber.fromValue(BigInt(LP), 18);
+        // console.log("userLP", userLP);
+        const userShort = FixedNumber.fromValue(BigInt(Short), 18);
+        // console.log("userShort", userShort);
+        const userLPRewards = userLP.div(poolLP).mul(poolLpRewards);
+        // console.log("userLPRewards", userLPRewards);
+        const userShortRewards = poolSum.Short!!
+            ? userShort.div(poolShort).mul(poolShortRewards)
+            : FixedNumber.fromValue(0, 18);
+        // console.log("userShortRewards", userShortRewards);
+
+        const claimableAmount = parseEther(
+            userLPRewards.add(userShortRewards).toString(),
+        );
+        console.log("claimableAmount", claimableAmount);
+
+        const previousValue = rewardsByTokenAddress[rewardTokenAddress];
+        if (!previousValue) {
+            rewardsByTokenAddress[rewardTokenAddress] = BigInt(claimableAmount);
+        } else {
+            rewardsByTokenAddress[rewardTokenAddress] +=
+                BigInt(claimableAmount);
+        }
+    });
+
+    console.log("rewardsByTokenAddress", rewardsByTokenAddress);
+    const rewards: Reward[] = Object.entries(rewardsByTokenAddress).map(
+        ([rewardTokenAddress, claimableAmount]) => {
+            console.log("rewardTokenAddress", rewardTokenAddress);
             return {
                 chainId: mainnet.id,
                 claimContractAddress: process.env.REWARDS_CONTRACT as Address,
-                claimableAmount: (BigInt(LP) + BigInt(Short)).toString(),
+                claimableAmount: FixedNumber.fromValue(
+                    claimableAmount,
+                    18,
+                ).toString(),
                 pendingAmount: "0",
-                rewardTokenAddress: process.env.REWARD_TOKEN as Address,
+                rewardTokenAddress: rewardTokenAddress as Address,
                 merkleProof: null,
                 merkleProofLastUpdated: 0,
             };
