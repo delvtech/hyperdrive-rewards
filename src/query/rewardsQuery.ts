@@ -12,9 +12,13 @@ import {
     parseEther,
 } from "viem";
 import { mainnet } from "viem/chains";
+import { hyperdriveReadAbi } from "../abi/hyperdriveRead";
 import { ONE } from "../constants";
 import { AppDataSource as dataSource } from "../dataSource";
-import { PoolInfoAtBlock } from "../entity/PoolInfoAtBlock";
+import {
+    PoolInfoAtBlock,
+    PoolInfoAtBlockInterface,
+} from "../entity/PoolInfoAtBlock";
 import { Trade } from "../entity/Trade";
 import {
     getAssetType,
@@ -553,37 +557,140 @@ export async function fetchRewardsForUserNew(
     );
     const userSums = await Promise.all(promises);
 
-    const uniqueHyperdriveAddresses: Address[] = (
-        await dataSource
-            .getRepository(Trade)
-            .createQueryBuilder("trades")
-            .select("DISTINCT trades.hyperdriveAddress", "hyperdriveAddress")
-            .getRawMany()
-    ).map(({ hyperdriveAddress }) => hyperdriveAddress);
+    // const uniqueHyperdriveAddresses: Address[] = (
+    //     await dataSource
+    //         .getRepository(Trade)
+    //         .createQueryBuilder("trades")
+    //         .select("DISTINCT trades.hyperdriveAddress", "hyperdriveAddress")
+    //         .getRawMany()
+    // ).map(({ hyperdriveAddress }) => hyperdriveAddress);
 
-    // const asdf = uniqueHyperdriveAddresses.map(async ({ hyperdrveAddress }) => {
-    //     const poolConfig = mainnetAppConfig.hyperdrives.find(
-    //         ({ address }) => address === hyperdriveAddress,
-    //     );
+    const poolInfosByHyperdriveAddress: {
+        hyperdriveAddress: Address;
+        poolInfos: PoolInfoAtBlockInterface[];
+    }[] = await dataSource.query(`
+        SELECT
+        "hyperdriveAddress",
+        json_agg(pool_info_at_block ORDER BY "blockNumber" ASC) AS "poolInfos"
+        FROM
+        pool_info_at_block
+        GROUP BY
+        "hyperdriveAddress";
+        `);
 
-    //     const { startBlock, endBlock } = await fetchRewardsEpoch(
-    //         poolConfig,
-    //         client,
-    //     );
-    // });
-    // const poolInfos: { poolInfo: Address }[] = await dataSource
-    //     .getRepository(PoolInfoAtBlock)
-    //     .createQueryBuilder("pool_info_at_block")
-    //     .getMany();
+    const poolSums: Record<Address, { LP: bigint; Short: bigint }> = {};
+    const poolSumsPromises = poolInfosByHyperdriveAddress.map(
+        async ({ hyperdriveAddress, poolInfos }) => {
+            const poolConfig = mainnetAppConfig.hyperdrives.find(
+                ({ address }) => address === hyperdriveAddress,
+            )!;
 
-    const rewards: Reward[] = userSums.map(
-        ({ LP, Short, hyperdriveAddress }) => {
+            const { startBlock, endBlock } = await fetchRewardsEpoch(
+                poolConfig,
+                client,
+            );
+
+            const startPoolInfo = await client.readContract({
+                address: hyperdriveAddress,
+                abi: hyperdriveReadAbi,
+                functionName: "getPoolInfo",
+                blockNumber: startBlock,
+            });
+
+            const endPoolInfo = await client.readContract({
+                address: hyperdriveAddress,
+                abi: hyperdriveReadAbi,
+                functionName: "getPoolInfo",
+                blockNumber: startBlock,
+            });
+
+            const poolInfosInEpoch = poolInfos.filter(
+                ({ blockNumber }) =>
+                    blockNumber > startBlock && blockNumber < endBlock,
+            );
+            const paddedPoolInfos = [
+                { ...startPoolInfo, blockNumber: startBlock },
+                ...poolInfosInEpoch,
+                { ...endPoolInfo, blockNumber: endBlock },
+            ];
+            const poolSum: {
+                hyperdriveAddress: Address;
+                LP: bigint;
+                Short: bigint;
+            } = {
+                hyperdriveAddress,
+                LP: 0n,
+                Short: 0n,
+            };
+            for (let i = 1; i < paddedPoolInfos.length; i++) {
+                const { shareReserves, shortsOutstanding } =
+                    paddedPoolInfos[i - 1];
+                const duration =
+                    BigInt(paddedPoolInfos[i].blockNumber) -
+                    BigInt(paddedPoolInfos[i - 1].blockNumber);
+                poolSum.LP +=
+                    (BigInt(shareReserves) - BigInt(shortsOutstanding)) *
+                    duration;
+                poolSum.Short += BigInt(shortsOutstanding) * duration;
+            }
+            poolSums[hyperdriveAddress] = poolSum;
+        },
+    );
+    await Promise.all(poolSumsPromises);
+
+    const rewardsByTokenAddress: Record<Address, bigint> = {};
+    userSums.forEach(({ LP, Short, hyperdriveAddress }) => {
+        // TODO: get rewardAmount from database.
+        const rewardAmount = FixedNumber.fromValue(parseEther("100"), 18);
+        const rewardTokenAddress = process.env.REWARDS_TOKEN as Address;
+
+        const poolSum = poolSums[hyperdriveAddress];
+        const poolLP = FixedNumber.fromValue(BigInt(poolSum.LP), 18);
+        const poolShort = FixedNumber.fromValue(BigInt(poolSum.Short), 18);
+        const totalPool = poolLP.add(poolShort);
+        const poolLpRewards = poolLP.div(totalPool).mul(rewardAmount);
+        // console.log("poolLpRewards", poolLpRewards.toString());
+        const poolShortRewards = poolShort.div(totalPool).mul(rewardAmount);
+        // console.log("poolShortRewards", poolShortRewards.toString());
+
+        const userLP = FixedNumber.fromValue(BigInt(LP), 18);
+        // console.log("userLP", userLP);
+        const userShort = FixedNumber.fromValue(BigInt(Short), 18);
+        // console.log("userShort", userShort);
+        const userLPRewards = userLP.div(poolLP).mul(poolLpRewards);
+        // console.log("userLPRewards", userLPRewards);
+        const userShortRewards = poolSum.Short!!
+            ? userShort.div(poolShort).mul(poolShortRewards)
+            : FixedNumber.fromValue(0, 18);
+        // console.log("userShortRewards", userShortRewards);
+
+        const claimableAmount = parseEther(
+            userLPRewards.add(userShortRewards).toString(),
+        );
+        console.log("claimableAmount", claimableAmount);
+
+        const previousValue = rewardsByTokenAddress[rewardTokenAddress];
+        if (!previousValue) {
+            rewardsByTokenAddress[rewardTokenAddress] = BigInt(claimableAmount);
+        } else {
+            rewardsByTokenAddress[rewardTokenAddress] +=
+                BigInt(claimableAmount);
+        }
+    });
+
+    console.log("rewardsByTokenAddress", rewardsByTokenAddress);
+    const rewards: Reward[] = Object.entries(rewardsByTokenAddress).map(
+        ([rewardTokenAddress, claimableAmount]) => {
+            console.log("rewardTokenAddress", rewardTokenAddress);
             return {
                 chainId: mainnet.id,
                 claimContractAddress: process.env.REWARDS_CONTRACT as Address,
-                claimableAmount: (BigInt(LP) + BigInt(Short)).toString(),
+                claimableAmount: FixedNumber.fromValue(
+                    claimableAmount,
+                    18,
+                ).toString(),
                 pendingAmount: "0",
-                rewardTokenAddress: process.env.REWARD_TOKEN as Address,
+                rewardTokenAddress: rewardTokenAddress as Address,
                 merkleProof: null,
                 merkleProofLastUpdated: 0,
             };
