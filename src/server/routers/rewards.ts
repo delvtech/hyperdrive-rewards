@@ -1,6 +1,8 @@
 import { Request, Response, Router } from "express";
+import { mainnetAppConfig } from "src/appConfig/mainnet";
 import { queryRewardsForUser } from "src/query/queryRewardsForUser";
-import { Address, formatEther, parseEther } from "viem";
+import { Address, formatEther } from "viem";
+import { convertBigIntToString } from "../../helpers/conversion";
 
 export const rewardsRouter = Router();
 
@@ -52,7 +54,7 @@ rewardsRouter.get(
     "/user/:address",
     async (req: RewardsRequest, res: Response) => {
         const { address } = req.params;
-        const rewards = await queryRewardsForUser(address);
+        const { rewards } = await queryRewardsForUser(address);
 
         const rewardsResponse: RewardsResponse = {
             userAddress: address,
@@ -80,6 +82,30 @@ rewardsRouter.get(
  *         description: Bad request
  */
 rewardsRouter.get("/all", async (req: RewardsRequest, res: Response) => {
+    const morphoRewards = Object.entries(mainnetAppConfig.rewards)
+        .filter(([address, rewards]) => {
+            return rewards.find((value) =>
+                value.toLowerCase().startsWith("morpho"),
+            );
+        })
+        .map(([address, rewards]) => {
+            return address.split(":")[3];
+        });
+    console.log("morphoRewards", morphoRewards);
+
+    const results = mainnetAppConfig.hyperdrives
+        .filter(({ address }) => {
+            return morphoRewards.includes(address);
+        })
+        .map(({ address, name, chainId }) => {
+            return {
+                address,
+                name,
+                chainId,
+            };
+        });
+    console.log("results", results);
+
     const users: Address[] = [
         "0x9eB168Ab44B7c479431681558FdF34230c969DE9",
         "0x5BE217bCF537377d0D5dB025f0ddD57CefF8dA84",
@@ -93,7 +119,55 @@ rewardsRouter.get("/all", async (req: RewardsRequest, res: Response) => {
     ];
     const promises = users.map((address) => queryRewardsForUser(address));
     const rewards = await Promise.all(promises);
-    const rewardsResponses = rewards.map((rewards, i) => {
+
+    // DEBUG
+    const totals: Record<
+        string,
+        {
+            totalLP: bigint;
+            totalShort: bigint;
+            poolLP: bigint;
+            poolShort: bigint;
+        }
+    > = {};
+    const sums = rewards.map(({ sumTotalsForPools }) => sumTotalsForPools);
+    sums.forEach((sum) => {
+        const [hyperdriveAddress, { totalLP, totalShort, poolLP, poolShort }] =
+            Object.entries(sum)[0];
+        if (!totals[hyperdriveAddress]) {
+            totals[hyperdriveAddress] = {
+                totalLP,
+                totalShort,
+                poolLP,
+                poolShort,
+            };
+        } else {
+            if (totals[hyperdriveAddress].poolLP !== poolLP) {
+                console.log(
+                    "poolLP mismatch",
+                    hyperdriveAddress,
+                    totals[hyperdriveAddress].poolLP,
+                    poolLP,
+                );
+            }
+            if (totals[hyperdriveAddress].poolShort !== poolShort) {
+                console.log(
+                    "poolShort mismatch",
+                    hyperdriveAddress,
+                    totals[hyperdriveAddress].poolShort,
+                    poolShort,
+                );
+            }
+            totals[hyperdriveAddress].totalLP += totalLP;
+            totals[hyperdriveAddress].totalShort += totalShort;
+        }
+    });
+    console.log(
+        "totals",
+        JSON.stringify(convertBigIntToString(totals), null, 2),
+    );
+
+    const rewardsResponses = rewards.map(({ rewards }, i) => {
         return {
             userAddress: users[i],
             rewards,
@@ -101,7 +175,10 @@ rewardsRouter.get("/all", async (req: RewardsRequest, res: Response) => {
     });
     let total = 0n;
     rewardsResponses.forEach((reward) => {
-        total += parseEther(reward.rewards[0]?.claimableAmount || "0");
+        if (!reward.rewards.length) {
+            return;
+        }
+        total += BigInt(reward.rewards[0]?.claimableAmount);
     });
     console.log("total", formatEther(total));
 

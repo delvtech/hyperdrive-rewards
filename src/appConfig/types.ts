@@ -7,7 +7,7 @@ const poolConfig = mainnetAppConfig.hyperdrives[0].poolConfig;
 
 export type PoolConfig = Modify<
     typeof poolConfig,
-    { address: Address; chainId: number }
+    { address: Address; chainId: number; vaultSharesToken: Address }
 >;
 
 export type HyperdriveConfig = Modify<
