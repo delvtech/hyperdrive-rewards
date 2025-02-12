@@ -4,6 +4,7 @@
     "module": "NodeNext",
     "outDir": "./dist",
     "rootDir": ".",
+    "baseUrl": ".",
     "strict": true,
     "esModuleInterop": true,
     // This is a workaround for a bug in the webautn-p256 package, which was
@@ -22,7 +23,10 @@
     // the entity properties need to have a default value set in the class
     // constructor.
     "strictPropertyInitialization": false,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "src/*": ["./src/*"]
+    }
   },
   "exclude": ["lib/**/*"],
   "include": ["./src", "./hardhat.config.ts"]

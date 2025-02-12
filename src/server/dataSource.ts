@@ -1,11 +1,10 @@
 import "reflect-metadata";
+import { PoolConfig } from "src/entity/PoolConfig";
+import { PoolInfoAtBlock } from "src/entity/PoolInfoAtBlock";
+import { PoolReward } from "src/entity/PoolReward";
+import { Trade } from "src/entity/Trade";
+import { UserReward } from "src/entity/UserReward";
 import { DataSource } from "typeorm";
-import { Balance } from "./entity/Balance";
-import { PoolConfig } from "./entity/PoolConfig";
-import { PoolInfo } from "./entity/PoolInfo";
-import { PoolInfoAtBlock } from "./entity/PoolInfoAtBlock";
-import { Trade } from "./entity/Trade";
-import { Wallet } from "./entity/Wallet";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -19,7 +18,7 @@ export const AppDataSource = new DataSource({
     },
     synchronize: true, // Creates table if not exists
     logging: false,
-    entities: [Balance, PoolConfig, PoolInfo, PoolInfoAtBlock, Trade, Wallet],
+    entities: [PoolConfig, PoolInfoAtBlock, Trade, PoolReward, UserReward],
     migrations: [],
     subscribers: [],
 });

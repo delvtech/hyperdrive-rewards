@@ -1,25 +1,28 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity("balances")
-export class Balance {
+@Entity("user_reward")
+export class UserReward {
     @PrimaryGeneratedColumn()
     id!: number;
+
+    @Column()
+    epoch!: number;
 
     @Column()
     hyperdriveAddress!: string;
 
     @Column()
-    trader!: string;
+    tokenAddress!: string;
 
     @Column()
-    assetId!: string;
+    userAddress!: string;
 
     @Column()
-    assetType!: string;
+    amount!: string;
 
     @Column()
-    balance!: string;
+    startBlock!: number;
 
     @Column()
-    blockNumber!: number;
+    endBlock!: number;
 }

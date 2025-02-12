@@ -7,11 +7,10 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 import https from "https";
 import swaggerUi from "swagger-ui-express";
 
-import { initializeDataSource } from "./dataSource";
-import { infoRouter } from "./info";
-import { poolRouter } from "./pool";
-import { rewardsRouter } from "./rewards";
-import swaggerSpec from "./swagger";
+import { initializeDataSource } from "src/server/dataSource";
+import { infoRouter } from "src/server/routers/info";
+import { rewardsRouter } from "src/server/routers/rewards";
+import swaggerSpec from "src/server/swagger";
 
 dotenv.config();
 
@@ -37,7 +36,6 @@ app.get("/swagger.json", (req: Request, res: Response) => {
 
 // Add routers.
 app.use("/get/rewards", rewardsRouter);
-app.use("/get/pool", poolRouter);
 app.use("/get/info", infoRouter);
 
 // Proxy all requests to /rpc to the local Anvil node

@@ -1,5 +1,9 @@
 import { parseAbiItem } from "viem";
 
+export const initializeEvent = parseAbiItem(
+    "event Initialize(address indexed provider, uint256 lpAmount, uint256 amount, uint256 vaultSharePrice, bool asBase, uint256 apr, bytes extraData)",
+);
+
 export const addLiquidityEvent = parseAbiItem(
     "event AddLiquidity(address indexed provider, uint256 lpAmount, uint256 amount, uint256 vaultSharePrice, bool asBase, uint256 lpSharePrice, bytes extraData)",
 );
@@ -23,6 +27,20 @@ export const closeLongEvent = parseAbiItem(
 export const closeShortEvent = parseAbiItem(
     "event CloseShort(address indexed trader, address indexed destination, uint256 indexed assetId, uint256 maturityTime, uint256 amount, uint256 vaultSharePrice, bool asBase, uint256 basePayment, uint256 bondAmount, bytes extraData)",
 );
+
+export const initializeAbiEvent = {
+    type: "event",
+    name: "Initialize",
+    inputs: [
+        { name: "provider", type: "address", indexed: true },
+        { name: "lpAmount", type: "uint256", indexed: false },
+        { name: "amount", type: "uint256", indexed: false },
+        { name: "vaultSharePrice", type: "uint256", indexed: false },
+        { name: "asBase", type: "bool", indexed: false },
+        { name: "apr", type: "uint256", indexed: false },
+        { name: "extraData", type: "bytes", indexed: false },
+    ],
+} as const;
 
 export const addLiquidityAbiEvent = {
     type: "event",

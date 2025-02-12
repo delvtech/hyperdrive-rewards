@@ -1,13 +1,13 @@
-import { HyperdriveConfig } from "@delvtech/hyperdrive-appconfig/dist/index.cjs";
 import "dotenv/config";
+import { openShortAbiEvent } from "src/abi/events";
+import { hyperdriveReadAbi } from "src/abi/hyperdriveRead";
+import { HyperdriveConfig } from "src/appConfig/types";
+import { PoolInfoAtBlock } from "src/entity/PoolInfoAtBlock";
+import { Trade } from "src/entity/Trade";
+import { assetIdBigIntToHex } from "src/helpers/assets";
+import { getBlockTimestamp } from "src/helpers/block";
+import { AppDataSource } from "src/server/dataSource";
 import { PublicClient } from "viem";
-import { openShortAbiEvent } from "../abi/events";
-import { hyperdriveReadAbi } from "../abi/hyperdriveRead";
-import { AppDataSource } from "../dataSource";
-import { PoolInfoAtBlock } from "../entity/PoolInfoAtBlock";
-import { Trade } from "../entity/Trade";
-import { assetIdBigIntToHex } from "../helpers/assets";
-import { getBlockTimestamp } from "../helpers/block";
 
 /**
  * Fetches and processes "OpenShort" events from the Hyperdrive smart contract
@@ -99,10 +99,6 @@ export async function saveOpenShortEvents(
         const blockTime = Number(blockTimestamps[index]);
         const transactionHash = log.transactionHash;
 
-        console.log(
-            `Processing OpenShort event at block ${blockNumber} for trader ${trader}`,
-        );
-
         const items = [
             { name: "trader", value: trader },
             { name: "assetId", value: assetId },
@@ -193,5 +189,5 @@ export async function saveOpenShortEvents(
         .orIgnore()
         .execute();
 
-    console.log("Done saving OpenShort events.");
+    console.log(`Done saving OpenShort events for ${hyperdrive.name}`);
 }
