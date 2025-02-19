@@ -147,3 +147,16 @@ export const transferSingleAbiEvent = {
         { name: "value", type: "uint256", indexed: false },
     ],
 } as const;
+
+export const createCheckpointAbiEvent = {
+    type: "event",
+    name: "CreateCheckpoint",
+    inputs: [
+        { name: "checkpointTime", type: "uint256", indexed: true },
+        { name: "checkpointVaultSharePrice", type: "uint256", indexed: false },
+        { name: "vaultSharePrice", type: "uint256", indexed: false },
+        { name: "maturedShorts", type: "uint256", indexed: false },
+        { name: "maturedLongs", type: "uint256", indexed: false },
+        { name: "lpSharePrice", type: "uint256", indexed: false },
+    ],
+} as const;

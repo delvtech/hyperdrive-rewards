@@ -4,10 +4,10 @@ import { hyperdriveReadAbi } from "src/abi/hyperdriveRead";
 import { getHyperdriveConfig } from "src/appConfig/getHyperdriveConfig";
 import { PoolInfoAtBlock } from "src/entity/PoolInfoAtBlock";
 import { LP_ASSET_ID } from "src/helpers/assets";
+import { convertBigIntToString } from "src/helpers/conversion";
 import { AppDataSource } from "src/server/dataSource";
 import { Address, createPublicClient, http } from "viem";
 import { mainnet } from "viem/chains";
-import { convertBigIntToString } from "../../helpers/conversion";
 
 export const infoRouter = Router();
 

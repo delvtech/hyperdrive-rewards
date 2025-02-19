@@ -1,8 +1,12 @@
 import { Request, Response, Router } from "express";
 import { mainnetAppConfig } from "src/appConfig/mainnet";
+import { MORPHO_TOKEN } from "src/distributions/morpho/morpho";
+import { convertBigIntToString } from "src/helpers/conversion";
+import { getMerkleData } from "src/merkle/getMerkleData";
+import { getPoolAddresses } from "src/pools/all";
 import { queryRewardsForUser } from "src/query/queryRewardsForUser";
+import { queryPoolRewardsForAllEpochs } from "src/query/queryRewardsForUserNew";
 import { Address, formatEther } from "viem";
-import { convertBigIntToString } from "../../helpers/conversion";
 
 export const rewardsRouter = Router();
 
@@ -184,3 +188,96 @@ rewardsRouter.get("/all", async (req: RewardsRequest, res: Response) => {
 
     res.json(rewardsResponses);
 });
+
+/**
+ * @swagger
+ * /get/rewards/all_new:
+ *   get:
+ *     summary: Get rewards for all users.
+ *     description: Returns the rewards associated with a specific address.
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RewardsResponse'
+ *       400:
+ *         description: Bad request
+ */
+rewardsRouter.get("/all_new", async (req: RewardsRequest, res: Response) => {
+    const addresses = getPoolAddresses();
+    const promises = addresses.map((address) =>
+        queryPoolRewardsForAllEpochs(address, MORPHO_TOKEN),
+    );
+    const rewards = await Promise.all(promises);
+    res.json(convertBigIntToString(rewards));
+});
+
+/**
+ * @swagger
+ * /get/rewards/user/new/{address}:
+ *   get:
+ *     summary: Get rewards for an address.
+ *     description: Returns the rewards associated with a specific address.
+ *     parameters:
+ *       - in: path
+ *         name: address
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The address to retrieve rewards for.
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RewardsResponse'
+ *       400:
+ *         description: Bad request
+ */
+rewardsRouter.get(
+    "/user/new/:address",
+    async (req: RewardsRequest, res: Response) => {
+        const { address } = req.params;
+
+        const merkleData = getMerkleData();
+        const userMerkleData = merkleData.rewards.filter(
+            ({ user }) => user === address,
+        );
+
+        const rewards = userMerkleData.map((data) => {
+            const {
+                chainId,
+                claimContract: claimContractAddress,
+                claimableAmount,
+                rewardToken: rewardTokenAddress,
+                proof: merkleProof,
+                merkleProofLastUpdated,
+            } = data;
+            const reward: Reward = {
+                chainId,
+                claimContractAddress,
+                claimableAmount,
+                pendingAmount: "0",
+                rewardTokenAddress,
+                merkleProof,
+                merkleProofLastUpdated,
+            };
+            return reward;
+        });
+
+        const rewardsResponse: RewardsResponse = {
+            userAddress: address,
+            rewards,
+        };
+
+        if (!rewards) {
+            res.json({});
+            return;
+        }
+
+        res.json(rewardsResponse);
+    },
+);

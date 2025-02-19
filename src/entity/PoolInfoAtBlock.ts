@@ -11,58 +11,58 @@ export class BigIntTransformer implements ValueTransformer {
 }
 
 @Entity("pool_info_at_block")
-export class PoolInfoAtBlock {
+export class PoolInfoAtBlock implements PoolInfoAtBlockInterface {
     // Extra data
     @PrimaryColumn()
     blockNumber: number;
 
-    @Column({ type: "character varying" })
+    @Column({ name: "hyperdriveAddress", type: "character varying" })
     hyperdriveAddress: string;
 
     // PoolInfo data, stored as BigInt
-    @Column()
+    @Column({ name: "shareReserves" })
     shareReserves: string;
 
-    @Column()
+    @Column({ name: "shareAdjustment" })
     shareAdjustment: string;
 
-    @Column()
+    @Column({ name: "zombieBaseProceeds" })
     zombieBaseProceeds: string;
 
-    @Column()
+    @Column({ name: "zombieShareReserves" })
     zombieShareReserves: string;
 
-    @Column()
+    @Column({ name: "bondReserves" })
     bondReserves: string;
 
-    @Column()
+    @Column({ name: "lpTotalSupply" })
     lpTotalSupply: string;
 
-    @Column()
+    @Column({ name: "vaultSharePrice" })
     vaultSharePrice: string;
 
-    @Column()
+    @Column({ name: "longsOutstanding" })
     longsOutstanding: string;
 
-    @Column()
+    @Column({ name: "longAverageMaturityTime" })
     longAverageMaturityTime: string;
 
-    @Column()
+    @Column({ name: "shortsOutstanding" })
     shortsOutstanding: string;
 
-    @Column()
+    @Column({ name: "shortAverageMaturityTime" })
     shortAverageMaturityTime: string;
 
-    @Column()
+    @Column({ name: "withdrawalSharesReadyToWithdraw" })
     withdrawalSharesReadyToWithdraw: string;
 
-    @Column()
+    @Column({ name: "withdrawalSharesProceeds" })
     withdrawalSharesProceeds: string;
 
-    @Column()
+    @Column({ name: "lpSharePrice" })
     lpSharePrice: string;
 
-    @Column()
+    @Column({ name: "longExposure" })
     longExposure: string;
 }
 

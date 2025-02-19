@@ -1,20 +1,20 @@
-import { mainnetAppConfig } from "src/appConfig/mainnet";
 import { HyperdriveConfig } from "src/appConfig/types";
-import { AppDataSource } from "src/server/dataSource";
-import { saveAddLiquidityEvents } from "src/tasks/saveAddLiquidityEvents";
-import { saveCloseLongEvents } from "src/tasks/saveCloseLongEvents";
-import { saveCloseShortEvents } from "src/tasks/saveCloseShortEvents";
-import { saveInitializeEvents } from "src/tasks/saveInitializeEvents";
-import { saveOpenLongEvents } from "src/tasks/saveOpenLongEvents";
-import { saveOpenShortEvents } from "src/tasks/saveOpenShortEvents";
-import { saveRemoveLiquidityEvents } from "src/tasks/saveRemoveLiquidityEvents";
-import { saveTransferSingleEvents } from "src/tasks/saveTransferSingleEvents";
+import { saveAddLiquidityEvents } from "src/events/saveAddLiquidityEvents";
+import { saveCheckpoints } from "src/events/saveCheckpoints";
+import { saveCloseLongEvents } from "src/events/saveCloseLongEvents";
+import { saveCloseShortEvents } from "src/events/saveCloseShortEvents";
+import { saveInitializeEvents } from "src/events/saveInitializeEvents";
+import { saveOpenLongEvents } from "src/events/saveOpenLongEvents";
+import { saveOpenShortEvents } from "src/events/saveOpenShortEvents";
+import { saveRemoveLiquidityEvents } from "src/events/saveRemoveLiquidityEvents";
+import { saveTransferSingleEvents } from "src/events/saveTransferSingleEvents";
+import { getPools } from "src/pools/all";
+import { initializeDataSource } from "src/server/dataSource";
 import { createPublicClient, http } from "viem";
 import { mainnet } from "viem/chains";
 
 async function saveEvents(pools: HyperdriveConfig[]) {
-    await AppDataSource.initialize();
-    console.log("Connected to PostgreSQL");
+    await initializeDataSource();
 
     const rpcUrl = process.env.ALCHEMY_RPC_URL!;
     console.log("rpcUrl", rpcUrl);
@@ -35,20 +35,15 @@ async function saveEvents(pools: HyperdriveConfig[]) {
         promises.push(saveAddLiquidityEvents(pool, client));
         promises.push(saveRemoveLiquidityEvents(pool, client));
         promises.push(saveTransferSingleEvents(pool, client));
+        promises.push(saveCheckpoints(pool, client));
     });
 
     await Promise.all(promises);
 }
 
 async function main() {
-    const mainnetPools = mainnetAppConfig.hyperdrives.filter(
-        ({ chainId }) => chainId === 1,
-    ) as HyperdriveConfig[];
-
-    const morphoPools = mainnetPools.filter(({ name }) =>
-        name.includes("Morpho"),
-    );
-    await saveEvents(morphoPools);
+    const pools = getPools();
+    await saveEvents(pools);
 }
 
 main().catch((error) => {
