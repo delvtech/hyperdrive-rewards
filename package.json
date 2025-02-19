@@ -12,7 +12,11 @@
     "dev": "nodemon src/server/index.ts",
     "build": "./script/bash/buildServer.sh",
     "format:solidity": "npx prettier --write \"src/contracts/**/*.sol\"",
-    "typeorm": "typeorm-ts-node-commonjs"
+    "typeorm": "typeorm-ts-node-commonjs",
+    "anvil:fork": "anvil --host 0.0.0.0 --port 8545 --fork-url https://eth-mainnet.g.alchemy.com/v2/YjUJYXT79LWtfH1bsgFmwDpCzc5-x21p --chain-id 1",
+    "deploy:local": "forge script script/forge/DeployHyperdriveRewards.s.sol --rpc-url localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast",
+    "save-events": "npx ts-node --require tsconfig-paths/register src/tasks/saveEvents.ts",
+    "claim-rewards": "npx ts-node --require tsconfig-paths/register src/tasks/claimRewards.ts"
   },
   "lint-staged": {
     "contracts/**/*.sol": "npx prettier --write",
@@ -32,6 +36,7 @@
     "@types/express": "^5.0.0",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.7",
+    "@wagmi/core": "1.4.13-cjs",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "ethers": "^6.13.5",

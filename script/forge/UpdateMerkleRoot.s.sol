@@ -43,7 +43,6 @@ contract UpdateMerkleRoot is Script {
         bytes32[] memory merkleData = new bytes32[](merkleEntries.length);
         string memory rewardsJson = '{"rewards": ['; // JSON array start
 
-
         for (uint256 i = 0; i < merkleEntries.length; i++) {
             uint256 claimableAmount = stringToUint(merkleEntries[i].claimable);
 
@@ -69,13 +68,42 @@ contract UpdateMerkleRoot is Script {
 
             // Manually serialize the struct as JSON
             string memory rewardJson = "{";
-            rewardJson = string.concat(rewardJson, '"user": "', toChecksumAddress(merkleEntries[i].user), '",');
+            rewardJson = string.concat(
+                rewardJson,
+                '"user": "',
+                toChecksumAddress(merkleEntries[i].user),
+                '",'
+            );
             rewardJson = string.concat(rewardJson, '"chainId": 708,');
-            rewardJson = string.concat(rewardJson, '"claimContract": "', toChecksumAddress(contractAddress), '",');
-            rewardJson = string.concat(rewardJson, '"claimableAmount": "', merkleEntries[i].claimable, '",');
-            rewardJson = string.concat(rewardJson, '"rewardToken": "', toChecksumAddress(merkleEntries[i].token), '",');
-            rewardJson = string.concat(rewardJson, '"proof": ', bytes32ArrayToJson(proof), ",");
-            rewardJson = string.concat(rewardJson, '"merkleProofLastUpdated": ', Strings.toString(block.timestamp));
+            rewardJson = string.concat(
+                rewardJson,
+                '"claimContract": "',
+                toChecksumAddress(contractAddress),
+                '",'
+            );
+            rewardJson = string.concat(
+                rewardJson,
+                '"claimableAmount": "',
+                merkleEntries[i].claimable,
+                '",'
+            );
+            rewardJson = string.concat(
+                rewardJson,
+                '"rewardToken": "',
+                toChecksumAddress(merkleEntries[i].token),
+                '",'
+            );
+            rewardJson = string.concat(
+                rewardJson,
+                '"proof": ',
+                bytes32ArrayToJson(proof),
+                ","
+            );
+            rewardJson = string.concat(
+                rewardJson,
+                '"merkleProofLastUpdated": ',
+                Strings.toString(block.timestamp)
+            );
             rewardJson = string.concat(rewardJson, "}");
 
             // Append to rewards array JSON
@@ -87,12 +115,12 @@ contract UpdateMerkleRoot is Script {
         rewardsJson = string.concat(rewardsJson, "]}"); // Close JSON array
 
         // Save rewards data to JSON file
-        string memory outputFilePath = "data/mainnet_test_out.json";
+        string memory outputFilePath = "data/ethereum_test_out.json";
         vm.writeFile(outputFilePath, rewardsJson);
 
         // Compute the Merkle root
         bytes32 merkleRoot = merkle.getRoot(merkleData);
-        console.log('merkleRoot', bytes32ToHexString(merkleRoot));
+        console.log("merkleRoot", bytes32ToHexString(merkleRoot));
         // vm.writeFile("data/merkle_root.json", vm.serializeJson(".merkleRoot", merkleRoot));
 
         // Update the Merkle root in the contract
@@ -114,7 +142,9 @@ contract UpdateMerkleRoot is Script {
     }
 
     // Convert bytes32 array to a JSON array
-    function bytes32ArrayToJson(bytes32[] memory array) internal pure returns (string memory) {
+    function bytes32ArrayToJson(
+        bytes32[] memory array
+    ) internal pure returns (string memory) {
         string memory result = "["; // Start JSON array
         for (uint256 i = 0; i < array.length; i++) {
             result = string(
@@ -128,7 +158,9 @@ contract UpdateMerkleRoot is Script {
     }
 
     // Converts a bytes32 to a hex string (e.g., 0xabc123...)
-    function bytes32ToHexString(bytes32 _bytes) internal pure returns (string memory) {
+    function bytes32ToHexString(
+        bytes32 _bytes
+    ) internal pure returns (string memory) {
         bytes memory HEX_CHARS = "0123456789abcdef";
         bytes memory str = new bytes(2 + _bytes.length * 2);
         str[0] = "0";
@@ -142,7 +174,9 @@ contract UpdateMerkleRoot is Script {
 
     string internal constant _SYMBOLS = "0123456789abcdef";
     string internal constant _CAPITAL = "0123456789ABCDEF";
-    function toChecksumAddress(address tempaddr) public pure returns (string memory) {
+    function toChecksumAddress(
+        address tempaddr
+    ) public pure returns (string memory) {
         bytes memory lowercase = addressToLowercaseBytes(tempaddr); // Convert to lowercase hex without '0x'
         bytes32 hashedAddr = keccak256(abi.encodePacked(lowercase)); // Hash the lowercase address
 
@@ -153,7 +187,8 @@ contract UpdateMerkleRoot is Script {
         uint160 addrValue = uint160(tempaddr);
         uint160 hashValue = uint160(bytes20(hashedAddr));
 
-        for (uint i = 41; i > 1; --i) { // Start from last hex digit
+        for (uint i = 41; i > 1; --i) {
+            // Start from last hex digit
             uint addrIndex = addrValue & 0xf; // Get last hex digit of address
             uint hashIndex = hashValue & 0xf; // Get corresponding hash digit
 
@@ -170,7 +205,9 @@ contract UpdateMerkleRoot is Script {
         return string(result);
     }
 
-    function addressToLowercaseBytes(address x) internal pure returns (bytes memory) {
+    function addressToLowercaseBytes(
+        address x
+    ) internal pure returns (bytes memory) {
         bytes memory s = new bytes(40);
         for (uint i = 0; i < 20; i++) {
             bytes1 b = bytes1(uint8(uint(uint160(x)) / (2 ** (8 * (19 - i)))));
@@ -183,7 +220,8 @@ contract UpdateMerkleRoot is Script {
     }
 
     function getChar(bytes1 b) internal pure returns (bytes1 c) {
-        if (uint8(b) < 10) return bytes1(uint8(b) + 0x30); // 0-9
+        if (uint8(b) < 10) return bytes1(uint8(b) + 0x30);
+        // 0-9
         else return bytes1(uint8(b) + 0x57); // a-f
     }
 }

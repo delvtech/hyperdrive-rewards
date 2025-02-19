@@ -1,0 +1,39 @@
+{
+  "data": [
+    {
+      "claimable": "66934319057620001",
+      "token": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "user": "0x4206eD0b6dDe3283a286f5c9b7aC87f3c790B056"
+    },
+    {
+      "claimable": "13169623702",
+      "token": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "user": "0x5BE217bCF537377d0D5dB025f0ddD57CefF8dA84"
+    },
+    {
+      "claimable": "0",
+      "token": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "user": "0x7837560135d66E8cf745e665781574178Da26097"
+    },
+    {
+      "claimable": "0",
+      "token": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "user": "0x91cfD910E0B93911482706e9f1523541C6c1f837"
+    },
+    {
+      "claimable": "9242799534823231",
+      "token": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "user": "0x9eB168Ab44B7c479431681558FdF34230c969DE9"
+    },
+    {
+      "claimable": "0",
+      "token": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "user": "0xdF7Eea635c890caf0467Ab9912d96b924A0Ce482"
+    },
+    {
+      "claimable": "8112199790390986361",
+      "token": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "user": "0xF6094C3A380AD6161Fb8240F3043392A0E427CAC"
+    }
+  ]
+}

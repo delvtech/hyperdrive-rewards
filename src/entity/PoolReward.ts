@@ -1,25 +1,37 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Address } from "viem";
 
 @Entity("pool_reward")
-export class PoolReward {
+@Unique(["hyperdriveAddress", "rewardTokenAddress", "startBlock", "endBlock"])
+export class PoolReward implements PoolRewardInterface {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column()
+    @Column({ name: "epoch" })
     epoch!: number;
 
-    @Column()
-    hyperdriveAddress!: string;
+    @Column({ name: "hyperdriveAddress" })
+    hyperdriveAddress!: Address;
 
-    @Column()
-    tokenAddress!: string;
+    @Column({ name: "rewardTokenAddress" })
+    rewardTokenAddress!: Address;
 
-    @Column()
+    @Column({ name: "amount" })
     amount!: string;
 
-    @Column()
+    @Column({ name: "startBlock" })
     startBlock!: number;
 
-    @Column()
+    @Column({ name: "endBlock" })
     endBlock!: number;
+}
+
+export interface PoolRewardInterface {
+    id: number;
+    hyperdriveAddress: Address;
+    rewardTokenAddress: Address;
+    amount: string;
+    epoch: number;
+    startBlock: number;
+    endBlock: number;
 }

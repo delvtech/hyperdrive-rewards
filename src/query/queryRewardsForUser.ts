@@ -55,9 +55,6 @@ type SumTotalsForPools = Record<
 >;
 export async function queryRewardsForUser(
     userAddress: Address,
-    hyperdriveAddress: Address | null = null,
-    startBlock: bigint | null = null,
-    endBlock: bigint | null = null,
 ): Promise<{ rewards: Reward[]; sumTotalsForPools: SumTotalsForPools }> {
     // NOTE: If try to use initializationBlock for startBlock and latest for endBlock,
     //       and just add to the total sum, then earlier users will get more rewards than they should.

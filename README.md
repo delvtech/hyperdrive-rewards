@@ -1,66 +1,58 @@
-## Foundry
+## Hyperdrive Rewards
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+Hyperdrive Rewards is a repository for claiming and redistributing rewards collected though Hyperdrive pools to the users that have interacted with those pools. Because Hyperdrive pools wrap yield sources that collect points and tokens as incentives to use those yield sources, we must distribute those rewards to the users of the Hyperdrive pools. Rewards are currently distributed amonst users that have either provided liquidity to the pools or opened shorts. This repository contains all the code necessary for:
 
-Foundry consists of:
-
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+1. Providing an API server to fetch reward information for each user.
+2. Claiming rewards each Hyperdrive pool has earned from its wrapped yield source.
+3. Transferring rewards from the Hyperdrive pools to the Hyperdrive rewards contract.
+4. Generating the merkle tree for rewards and updating the rewards contract with the new merkle root.
 
 ## Documentation
 
-https://book.getfoundry.sh/
-
-## Usage
-
 ### Build
 
+to build the production version of the server, simply run:
+
 ```shell
-$ forge build
+$ yarn build
 ```
 
-### Test
+### Local Development
 
-```shell
-$ forge test
+This repository can be run locally for development purposes. To spin up a local development environment, you'll need to spin up a local anvil fork and deploy contracts. First, you'll need to make sure that your environment is NOT set to production:
+
+```
+#.env
+NODE_ENV=development
 ```
 
-### Format
+#### Setup Anvil
 
 ```shell
-$ forge fmt
+$ npx run anvil:fork
 ```
 
-### Gas Snapshots
+#### Deploy Contracts
 
 ```shell
-$ forge snapshot
+$ npx run deploy:local
 ```
 
-### Anvil
+After deploying the contracts, copy the address to the .env file:
 
-```shell
-$ anvil
+```
+#.env
+REWARDS_CONTRACT=0x1234...ABCD
 ```
 
-### Deploy
+#### Database
+
+The source code is automatically set up to connect to the remote database hosted on AWS. In development mode, a test database "rewards_test" is used. This should be considered reliable or complete. Feel free to edit, delete or add data here for testing and development purposes.
+
+To populate the database with the trade events, simply run:
 
 ```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
+$ npx ts-node --require tsconfig-paths/register src/tasks/saveEvents.ts
 ```
 
 ### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```

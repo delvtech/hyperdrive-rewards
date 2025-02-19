@@ -1,52 +1,72 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("trades")
-export class Trade {
+export class Trade implements TradeInterface {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column()
+    @Column({ name: "type" })
     type: string;
 
-    @Column()
+    @Column({ name: "hyperdriveAddress" })
     hyperdriveAddress: string;
 
-    @Column({ type: "varchar", length: 66, unique: true }) // Unique index
+    @Column({
+        name: "transactionHash",
+        type: "varchar",
+        length: 66,
+        unique: true,
+    }) // Unique index
     transactionHash!: string;
 
-    @Column()
+    @Column({ name: "trader" })
     trader!: string;
 
-    @Column()
+    @Column({ name: "assetId" })
     assetId!: string;
 
-    @Column()
+    @Column({ name: "blockNumber" })
     blockNumber!: number;
 
-    @Column()
+    @Column({ name: "blockTime" })
     blockTime!: number;
 
-    @Column()
+    @Column({ name: "maturityTime" })
     maturityTime!: string;
 
-    @Column()
+    @Column({ name: "amount" })
     amount!: string;
 
-    @Column()
+    @Column({ name: "vaultSharePrice" })
     vaultSharePrice!: string;
 
-    @Column()
+    @Column({ name: "asBase" })
     asBase!: boolean;
 
-    @Column()
+    @Column({ name: "bondAmount" })
     bondAmount!: string;
 
-    @Column()
+    @Column({ name: "baseProceeds" })
     baseProceeds!: string;
 
-    @Column()
+    @Column({ name: "balanceAtBlock" })
     balanceAtBlock!: string;
+}
 
-    // @CreateDateColumn()
-    // timestamp!: Date;
+export interface TradeInterface {
+    id: number;
+    type: string;
+    hyperdriveAddress: string;
+    transactionHash: string;
+    trader: string;
+    assetId: string;
+    blockNumber: number;
+    blockTime: number;
+    maturityTime: string;
+    amount: string;
+    vaultSharePrice: string;
+    asBase: boolean;
+    bondAmount: string;
+    baseProceeds: string;
+    balanceAtBlock: string;
 }

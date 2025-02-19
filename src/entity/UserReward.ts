@@ -1,28 +1,41 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Address } from "viem";
 
 @Entity("user_reward")
-export class UserReward {
+@Unique(["epoch", "rewardTokenAddress", "userAddress", "hyperdriveAddress"])
+export class UserReward implements UserRewardInterface {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column()
+    @Column({ name: "epoch" })
     epoch!: number;
 
-    @Column()
-    hyperdriveAddress!: string;
+    @Column({ name: "hyperdriveAddress" })
+    hyperdriveAddress!: Address;
 
-    @Column()
-    tokenAddress!: string;
+    @Column({ name: "rewardTokenAddress" })
+    rewardTokenAddress!: Address;
 
-    @Column()
-    userAddress!: string;
+    @Column({ name: "userAddress" })
+    userAddress!: Address;
 
-    @Column()
+    @Column({ name: "amount" })
     amount!: string;
 
-    @Column()
+    @Column({ name: "startBlock" })
     startBlock!: number;
 
-    @Column()
+    @Column({ name: "endBlock" })
     endBlock!: number;
+}
+
+export interface UserRewardInterface {
+    id: number;
+    epoch: number;
+    hyperdriveAddress: Address;
+    rewardTokenAddress: Address;
+    userAddress: Address;
+    amount: string;
+    startBlock: number;
+    endBlock: number;
 }

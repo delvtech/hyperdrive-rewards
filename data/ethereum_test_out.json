@@ -1,0 +1,95 @@
+{
+  "rewards": [
+    {
+      "user": "0x4206eD0b6dDe3283a286f5c9b7aC87f3c790B056",
+      "chainId": 708,
+      "claimContract": "0xeF66010868Ff77119171628B7eFa0F6179779375",
+      "claimableAmount": "101847048159958297",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0x6e5c2ac000e50740d10bb98cbe3cc25e6862c0eb1bd7bb60c14ac29bef7af8f0",
+        "0xbc133c722d9f17aa5216c665df84301be1972a9b63ebc5bd2d3188f0f7911c53",
+        "0x22b108a67f369f20d3f39f6d1b68115481068795dbb7dff1b9829a7f76631717"
+      ],
+      "merkleProofLastUpdated": 1739889469
+    },
+    {
+      "user": "0x5BE217bCF537377d0D5dB025f0ddD57CefF8dA84",
+      "chainId": 708,
+      "claimContract": "0xeF66010868Ff77119171628B7eFa0F6179779375",
+      "claimableAmount": "14233593837",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0x5f3fd0eebf036e131aa518b920e8691c9e227406d30bd19b240e648e0a803a00",
+        "0xbc133c722d9f17aa5216c665df84301be1972a9b63ebc5bd2d3188f0f7911c53",
+        "0x22b108a67f369f20d3f39f6d1b68115481068795dbb7dff1b9829a7f76631717"
+      ],
+      "merkleProofLastUpdated": 1739889469
+    },
+    {
+      "user": "0x7837560135d66E8cf745e665781574178Da26097",
+      "chainId": 708,
+      "claimContract": "0xeF66010868Ff77119171628B7eFa0F6179779375",
+      "claimableAmount": "0",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0x7e38bfcebbbf92f7f1893e9ca08f346dc778278480d354f6c8ccce224ca30711",
+        "0x1231bdc4b67c74765f2c0c88734362ee42db44970f8ee0ad20bcd160c21c56a2",
+        "0x22b108a67f369f20d3f39f6d1b68115481068795dbb7dff1b9829a7f76631717"
+      ],
+      "merkleProofLastUpdated": 1739889469
+    },
+    {
+      "user": "0x91cfD910E0B93911482706e9f1523541C6c1f837",
+      "chainId": 708,
+      "claimContract": "0xeF66010868Ff77119171628B7eFa0F6179779375",
+      "claimableAmount": "3344268149480018359",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0xff7deffb43935edeca19c2b107ca60c865c50aaab3a0d292b794e01ab1e96970",
+        "0x1231bdc4b67c74765f2c0c88734362ee42db44970f8ee0ad20bcd160c21c56a2",
+        "0x22b108a67f369f20d3f39f6d1b68115481068795dbb7dff1b9829a7f76631717"
+      ],
+      "merkleProofLastUpdated": 1739889469
+    },
+    {
+      "user": "0x9eB168Ab44B7c479431681558FdF34230c969DE9",
+      "chainId": 708,
+      "claimContract": "0xeF66010868Ff77119171628B7eFa0F6179779375",
+      "claimableAmount": "26009876979407379",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0x6749dafb6f7584302f8b3b039bf81cd9fb1588d2a46d5bb36b7757662a6ce6e5",
+        "0xd45a9f52377d60825fe93010318ec31ee83bacb0af6d67301f69c3819c1637d3",
+        "0x72d5cd0102c376b2ee0fc03e33739af4ffcb40d9077cb34bdb28af581cd2d151"
+      ],
+      "merkleProofLastUpdated": 1739889469
+    },
+    {
+      "user": "0xdF7Eea635c890caf0467Ab9912d96b924A0Ce482",
+      "chainId": 708,
+      "claimContract": "0xeF66010868Ff77119171628B7eFa0F6179779375",
+      "claimableAmount": "2385176518796070757",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0xe90eabdabfb5d1ef7051a73c1d44474b10a05be2fda2e589d1492efb9d7a1c4d",
+        "0xd45a9f52377d60825fe93010318ec31ee83bacb0af6d67301f69c3819c1637d3",
+        "0x72d5cd0102c376b2ee0fc03e33739af4ffcb40d9077cb34bdb28af581cd2d151"
+      ],
+      "merkleProofLastUpdated": 1739889469
+    },
+    {
+      "user": "0xF6094C3A380AD6161Fb8240F3043392A0E427CAC",
+      "chainId": 708,
+      "claimContract": "0xeF66010868Ff77119171628B7eFa0F6179779375",
+      "claimableAmount": "2331075314504004649",
+      "rewardToken": "0x58D97B57BB95320F9a05dC918Aef65434969c2B2",
+      "proof": [
+        "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "0xb82f05fc3c4a7e16b368deddc5dbfcd34dfc4073f760e3a07a636f919b0cfecd",
+        "0x72d5cd0102c376b2ee0fc03e33739af4ffcb40d9077cb34bdb28af581cd2d151"
+      ],
+      "merkleProofLastUpdated": 1739889469
+    }
+  ]
+}
